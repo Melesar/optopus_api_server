@@ -88,7 +88,7 @@ class m161027_192954_users extends Migration
         $this->dropTable('users');
         $this->dropTable('levels');
 
-        return false;
+        return true;
     }
 
     /*
