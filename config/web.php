@@ -43,11 +43,21 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'GET users/get' => 'users/get',
-                'POST users/get' => 'users/post',
-                'PUT users/get' => 'users/put',
-                'GET users/friends' => 'users/getFriends',
-                'POST users/friends' => 'users/postFriends'
+                'GET users/<id:\d+>' => 'users/get', //возвращаем id пользователя
+                'POST users/<id:\d+>' => 'users/post', //возвращаем id пользователя
+                'PUT users/<id:\d+>' => 'users/put', //возвращаем "PUT"
+                'POST users/friends' => 'users/postfriends', //возвращаем "POST FRIENDS"
+                'PUT users/friends' => 'users/putfriends',  //возвращаем "PUT FRIENDS"
+                /******************/
+                'GET levels/<id:\d+>' => 'levels/getdata', //возвращаем id уровня
+                'POST levels/<id:\d+>' => 'levels/postdata', //возвращаем id уровня
+                'PUT levels/<id:\d+>' => 'levels/putdata', //возвращаем "PUT DATA"
+                'GET levels/progress' => 'levels/getprogress', //возвращаем "GET PROGRESS"
+                'POST levels/progress' => 'levels/postprogress', //возвращаем "POST PROGRESS"
+                'PUT levels/progress' => 'levels/putprogress', //возвращаем "PUT PROGRESS"
+                'GET levels/score' => 'levels/score' //возвращаем "GET SCORE"
+                //чтобы проверить id вводим любое число после users/ или levels/
+
 
 
             ],

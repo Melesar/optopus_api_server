@@ -9,36 +9,39 @@
 namespace app\controllers;
 
 use yii\rest\Controller;
+use yii;
 
 class UsersController extends Controller
 {
+
     public function actionData() //имя - вторая часть, т.е. Data
     {
-        return("HELLO!");
+       return("HELLO!");
     }
 
     public function actionGet()
     {
-        return("GET");
+
+        return Yii::$app->request->get('id'); //возвращаем id пользователя
     }
 
-    public function actionPost()
+    public function actionPost($id)
     {
-        return("POST");
+        return $id;
     }
 
     public function actionPut()
     {
-        return("PUT");
+        return ("PUT");
     }
 
-    public function actionGetFriends()
-    {
-        return("GET FRIENDS");
-    }
-
-    public function actionPostFriends()
+    public function actionPostfriends()
     {
         return("POST FRIENDS");
+    }
+
+    public function actionPutfriends()
+    {
+        return("PUT FRIENDS");
     }
 }
