@@ -11,6 +11,7 @@ namespace app\controllers;
 use app\models\Users;
 use yii\rest\Controller;
 use yii;
+use yii\web\NotFoundHttpException;
 
 class UsersController extends Controller
 {
@@ -64,14 +65,15 @@ class UsersController extends Controller
         }
     }
 
-    public function actionPostfriends()
+    public function actionPutfriends($user_id)
     {
-
-        return("POST FRIENDS");
-    }
-
-    public function actionPutfriends()
-    {
+        $data = Yii::$app->request->getBodyParams(); // id друзей пользоваетеля
+        $users = Users::findOne($user_id); // найти позьзователя через его id
+        if($users === null)
+        {
+            throw new NotFoundHttpException(); // 404
+        }
+        $users->setfriends($data); // вызываем метод из модели метод setfriends и передаем в него массив id всех друзей
         return("PUT FRIENDS");
     }
 }
