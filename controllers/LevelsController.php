@@ -14,10 +14,6 @@ use Yii;
 
 class LevelsController extends Controller
 {
-    public function actionData()
-    {
-        return("HI, THERE!!");
-    }
     public function actionGetdata()
     {
         return Yii::$app->request->get('id');

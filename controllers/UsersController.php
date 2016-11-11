@@ -49,8 +49,8 @@ class UsersController extends Controller
             //return("404"); //пользователь не найден - проверка пройдена
             $data = Yii::$app->request->getBodyParams(); //берем данные из пересланных данных по JSON --- данные считаны
             $users = new Users(); //создаем нового ПУСТОГО пользователя --- создан
-            $users->id=$id; //переписываем id созданного пользователя
-            $users->setAttributes($data,false); //загрузка данных из JSON
+            $users->id = $id; //переписываем id созданного пользователя
+            $users->setAttributes($data,false); //загрузка данных из JSON --- загрузка успешна
             $users->save(); //сохраняем изменения
             return $users->attributes;
         }
@@ -58,7 +58,7 @@ class UsersController extends Controller
         {
             //return("EXSIST"); // пользователь существует - проверка пройдена
             $data = Yii::$app->request->getBodyParams(); //берем данные из пересланных данных по JSON --- данные считаны
-            $users->setAttributes($data,false); //загрузка данных из JSON
+            $users->setAttributes($data,false); //загрузка данных из JSON --- загрузка успешна
             $users->update(); //обновляем внесенные изменения
             return $users->attributes;
         }
@@ -66,7 +66,7 @@ class UsersController extends Controller
 
     public function actionPostfriends()
     {
-        
+
         return("POST FRIENDS");
     }
 
