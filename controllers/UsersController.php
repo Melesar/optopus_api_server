@@ -8,6 +8,7 @@
 
 namespace app\controllers;
 
+use app\models\Users;
 use yii\rest\Controller;
 use yii;
 
@@ -21,22 +22,51 @@ class UsersController extends Controller
 
     public function actionGet()
     {
-
-        return Yii::$app->request->get('id'); //возвращаем id пользователя
+        //$users = new Users();
+        //$users->name = "Oleg";
+        //$users->last_name = "Konm";
+        //$users->save();
+        $id = Yii::$app->request->get('id');
+        $users = Users::findOne($id);
+        return $users->attributes;
     }
 
     public function actionPost($id)
     {
-        return $id;
+        $data = Yii::$app->request->getBodyParams(); //берем данные из пересланных данных по JSON --- данные считаны
+        $users = new Users(); //создаем нового ПУСТОГО пользователя --- создан
+        $users->id=$id; //переписываем id созданного пользователя
+        $users->setAttributes($data,false); //загрузка данных из JSON
+        $users->save(); //сохраняем изменения
+        return $users->attributes;
     }
 
-    public function actionPut()
+    public function actionPut($id) // аналогично POST, но + проверка на существующие и добавление
     {
-        return ("PUT");
+        $users = Users::findOne($id);
+        if($users === null)
+        {
+            //return("404"); //пользователь не найден - проверка пройдена
+            $data = Yii::$app->request->getBodyParams(); //берем данные из пересланных данных по JSON --- данные считаны
+            $users = new Users(); //создаем нового ПУСТОГО пользователя --- создан
+            $users->id=$id; //переписываем id созданного пользователя
+            $users->setAttributes($data,false); //загрузка данных из JSON
+            $users->save(); //сохраняем изменения
+            return $users->attributes;
+        }
+        else
+        {
+            //return("EXSIST"); // пользователь существует - проверка пройдена
+            $data = Yii::$app->request->getBodyParams(); //берем данные из пересланных данных по JSON --- данные считаны
+            $users->setAttributes($data,false); //загрузка данных из JSON
+            $users->update(); //обновляем внесенные изменения
+            return $users->attributes;
+        }
     }
 
     public function actionPostfriends()
     {
+        
         return("POST FRIENDS");
     }
 
