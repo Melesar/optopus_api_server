@@ -71,9 +71,9 @@ class UsersController extends Controller
         $users = Users::findOne($user_id); // найти позьзователя через его id
         if($users === null)
         {
-            throw new NotFoundHttpException(); // 404
+            throw new NotFoundHttpException(); // костыль 404
         }
         $users->setfriends($data); // вызываем метод из модели метод setfriends и передаем в него массив id всех друзей
-        return("PUT FRIENDS");
+        return("PUT FRIENDS"); //заглушка
     }
 }

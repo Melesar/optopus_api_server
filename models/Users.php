@@ -16,19 +16,15 @@ class Users extends ActiveRecord
 {
     public function setFriends($id_friends)
     {
-        $id = $this->id;
-        //$comand = Yii::$app->db->createCommand('SELECT * FROM frendship WHERE user_id = $id')->queryAll(); // подсоединяемся к базе данных друзей пользователя
-        Yii::$app->db->createCommand()->delete("friendship","user_id = $id")->execute();
-        for($i=0,$f_size=count($id_friends);$i<$f_size;$i++)
+        if($id_friends != null)
         {
-            Yii::$app->db->createCommand()->insert('friendship',['user_id' => $id,
-                                                                'friend_id' =>$id_friends[$i] ])->execute();
-
-
+            $id = $this->id;
+            // подсоединяемся к базе данных друзей пользователя и выполняем удаление всех записей "друзей"
+            // для заданого позльзователя, чей id равен user_id
+            Yii::$app->db->createCommand()->delete("friendship", "user_id = $id")->execute();
+            // запоняем пустую базу данных значениями массива $id_friends
+            for ($i = 0, $f_size = count($id_friends); $i < $f_size; $i++)
+                Yii::$app->db->createCommand()->insert('friendship', ['user_id' => $id, 'friend_id' => $id_friends[$i]])->execute();
         }
-
     }
-
-
-
 }

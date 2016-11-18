@@ -9,6 +9,7 @@
 namespace app\controllers;
 
 
+use app\models\Levels;
 use yii\rest\Controller;
 use Yii;
 
@@ -22,9 +23,25 @@ class LevelsController extends Controller
     {
         return $id;
     }
-    public function actionPutdata()
+    public function actionPutdata($id)
     {
-        return("PUT DATA");
+        $level = Levels::findone($id);
+        if($level == null)
+        {
+            $data = Yii::$app->request->getBodyParams();
+            $level = new Levels();
+            $level->id = $id;
+            $level->setAttributes($data,false);
+            $level->save();
+            return $level->attributes;
+        }
+        else if($level != null)
+        {
+            $data = Yii::$app->request->getBodyParams();
+            $level->setAttributes($data,false);
+            $level->save();
+            return $level->attributes;
+        }
     }
     public function actionGetprogress()
     {

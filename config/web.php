@@ -49,9 +49,9 @@ $config = [
                 'PUT users/<id:\d+>' => 'users/put', //возвращаем "PUT"
                 'PUT users/friends/<user_id:\d+>' => 'users/putfriends',  //возвращаем "PUT FRIENDS"
                 /******************/
-                'GET levels/<id:\d+>' => 'levels/getdata', //возвращаем id уровня
-                'POST levels/<id:\d+>' => 'levels/postdata', //возвращаем id уровня
-                'PUT levels/<id:\d+>' => 'levels/putdata', //возвращаем "PUT DATA"
+                'GET levels/data/<id:\d+>' => 'levels/getdata', //возвращаем id уровня
+                'POST levels/data/<id:\d+>' => 'levels/postdata', //возвращаем id уровня
+                'PUT levels/data/<id:\d+>' => 'levels/putdata', //возвращаем "PUT DATA"
                 'GET levels/progress' => 'levels/getprogress', //возвращаем "GET PROGRESS"
                 'POST levels/progress' => 'levels/postprogress', //возвращаем "POST PROGRESS"
                 'PUT levels/progress' => 'levels/putprogress', //возвращаем "PUT PROGRESS"
