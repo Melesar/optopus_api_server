@@ -16,7 +16,7 @@ use yii\web\NotFoundHttpException;
 class UsersController extends Controller
 {
 
-    public function actionData() //имя - вторая часть, т.е. Data
+    public function actionData() //РёРјСЏ - РІС‚РѕСЂР°СЏ С‡Р°СЃС‚СЊ, С‚.Рµ. Data
     {
        return("HELLO!");
     }
@@ -34,46 +34,46 @@ class UsersController extends Controller
 
     public function actionPost($id)
     {
-        $data = Yii::$app->request->getBodyParams(); //берем данные из пересланных данных по JSON --- данные считаны
-        $users = new Users(); //создаем нового ПУСТОГО пользователя --- создан
-        $users->id=$id; //переписываем id созданного пользователя
-        $users->setAttributes($data,false); //загрузка данных из JSON
-        $users->save(); //сохраняем изменения
+        $data = Yii::$app->request->getBodyParams(); //Р±РµСЂРµРј РґР°РЅРЅС‹Рµ РёР· РїРµСЂРµСЃР»Р°РЅРЅС‹С… РґР°РЅРЅС‹С… РїРѕ JSON --- РґР°РЅРЅС‹Рµ СЃС‡РёС‚Р°РЅС‹
+        $users = new Users(); //СЃРѕР·РґР°РµРј РЅРѕРІРѕРіРѕ РџРЈРЎРўРћР“Рћ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ --- СЃРѕР·РґР°РЅ
+        $users->id=$id; //РїРµСЂРµРїРёСЃС‹РІР°РµРј id СЃРѕР·РґР°РЅРЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+        $users->setAttributes($data,false); //Р·Р°РіСЂСѓР·РєР° РґР°РЅРЅС‹С… РёР· JSON
+        $users->save(); //СЃРѕС…СЂР°РЅСЏРµРј РёР·РјРµРЅРµРЅРёСЏ
         return $users->attributes;
     }
 
-    public function actionPut($id) // аналогично POST, но + проверка на существующие и добавление
+    public function actionPut($id) // Р°РЅР°Р»РѕРіРёС‡РЅРѕ POST, РЅРѕ + РїСЂРѕРІРµСЂРєР° РЅР° СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёРµ Рё РґРѕР±Р°РІР»РµРЅРёРµ
     {
         $users = Users::findOne($id);
         if($users === null)
         {
-            //return("404"); //пользователь не найден - проверка пройдена
-            $data = Yii::$app->request->getBodyParams(); //берем данные из пересланных данных по JSON --- данные считаны
-            $users = new Users(); //создаем нового ПУСТОГО пользователя --- создан
-            $users->id = $id; //переписываем id созданного пользователя
-            $users->setAttributes($data,false); //загрузка данных из JSON --- загрузка успешна
-            $users->save(); //сохраняем изменения
+            //return("404"); //РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅРµ РЅР°Р№РґРµРЅ - РїСЂРѕРІРµСЂРєР° РїСЂРѕР№РґРµРЅР°
+            $data = Yii::$app->request->getBodyParams(); //Р±РµСЂРµРј РґР°РЅРЅС‹Рµ РёР· РїРµСЂРµСЃР»Р°РЅРЅС‹С… РґР°РЅРЅС‹С… РїРѕ JSON --- РґР°РЅРЅС‹Рµ СЃС‡РёС‚Р°РЅС‹
+            $users = new Users(); //СЃРѕР·РґР°РµРј РЅРѕРІРѕРіРѕ РџРЈРЎРўРћР“Рћ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ --- СЃРѕР·РґР°РЅ
+            $users->id = $id; //РїРµСЂРµРїРёСЃС‹РІР°РµРј id СЃРѕР·РґР°РЅРЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+            $users->setAttributes($data,false); //Р·Р°РіСЂСѓР·РєР° РґР°РЅРЅС‹С… РёР· JSON --- Р·Р°РіСЂСѓР·РєР° СѓСЃРїРµС€РЅР°
+            $users->save(); //СЃРѕС…СЂР°РЅСЏРµРј РёР·РјРµРЅРµРЅРёСЏ
             return $users->attributes;
         }
         else
         {
-            //return("EXSIST"); // пользователь существует - проверка пройдена
-            $data = Yii::$app->request->getBodyParams(); //берем данные из пересланных данных по JSON --- данные считаны
-            $users->setAttributes($data,false); //загрузка данных из JSON --- загрузка успешна
-            $users->update(); //обновляем внесенные изменения
+            //return("EXSIST"); // РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃСѓС‰РµСЃС‚РІСѓРµС‚ - РїСЂРѕРІРµСЂРєР° РїСЂРѕР№РґРµРЅР°
+            $data = Yii::$app->request->getBodyParams(); //Р±РµСЂРµРј РґР°РЅРЅС‹Рµ РёР· РїРµСЂРµСЃР»Р°РЅРЅС‹С… РґР°РЅРЅС‹С… РїРѕ JSON --- РґР°РЅРЅС‹Рµ СЃС‡РёС‚Р°РЅС‹
+            $users->setAttributes($data,false); //Р·Р°РіСЂСѓР·РєР° РґР°РЅРЅС‹С… РёР· JSON --- Р·Р°РіСЂСѓР·РєР° СѓСЃРїРµС€РЅР°
+            $users->update(); //РѕР±РЅРѕРІР»СЏРµРј РІРЅРµСЃРµРЅРЅС‹Рµ РёР·РјРµРЅРµРЅРёСЏ
             return $users->attributes;
         }
     }
 
     public function actionPutfriends($user_id)
     {
-        $data = Yii::$app->request->getBodyParams(); // id друзей пользоваетеля
-        $users = Users::findOne($user_id); // найти позьзователя через его id
+        $data = Yii::$app->request->getBodyParams(); // id РґСЂСѓР·РµР№ РїРѕР»СЊР·РѕРІР°РµС‚РµР»СЏ
+        $users = Users::findOne($user_id); // РЅР°Р№С‚Рё РїРѕР·СЊР·РѕРІР°С‚РµР»СЏ С‡РµСЂРµР· РµРіРѕ id
         if($users === null)
         {
-            throw new NotFoundHttpException(); // костыль 404
+            throw new NotFoundHttpException(); // РєРѕСЃС‚С‹Р»СЊ 404
         }
-        $users->setfriends($data); // вызываем метод из модели метод setfriends и передаем в него массив id всех друзей
-        return("PUT FRIENDS"); //заглушка
+        $users->setfriends($data); // РІС‹Р·С‹РІР°РµРј РјРµС‚РѕРґ РёР· РјРѕРґРµР»Рё РјРµС‚РѕРґ setfriends Рё РїРµСЂРµРґР°РµРј РІ РЅРµРіРѕ РјР°СЃСЃРёРІ id РІСЃРµС… РґСЂСѓР·РµР№
+        return("PUT FRIENDS"); //Р·Р°РіР»СѓС€РєР°
     }
 }
