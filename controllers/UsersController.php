@@ -16,17 +16,13 @@ use yii\web\NotFoundHttpException;
 class UsersController extends Controller
 {
 
-    public function actionData() //имя - вторая часть, т.е. Data
+    public function actionData()
     {
        return("HELLO!");
     }
 
     public function actionGet()
     {
-        //$users = new Users();
-        //$users->name = "Oleg";
-        //$users->last_name = "Konm";
-        //$users->save();
         $id = Yii::$app->request->get('id');
         $users = Users::findOne($id);
         return $users->attributes;
@@ -34,46 +30,44 @@ class UsersController extends Controller
 
     public function actionPost($id)
     {
-        $data = Yii::$app->request->getBodyParams(); //берем данные из пересланных данных по JSON --- данные считаны
-        $users = new Users(); //создаем нового ПУСТОГО пользователя --- создан
-        $users->id=$id; //переписываем id созданного пользователя
-        $users->setAttributes($data,false); //загрузка данных из JSON
-        $users->save(); //сохраняем изменения
+        $data = Yii::$app->request->getBodyParams();
+        $users = new Users();
+        $users->id=$id;
+        $users->setAttributes($data,false);
+        $users->save();
         return $users->attributes;
     }
 
-    public function actionPut($id) // аналогично POST, но + проверка на существующие и добавление
+    public function actionPut($id)
     {
         $users = Users::findOne($id);
-        if($users === null)
+        if($users === null) // POST
         {
-            //return("404"); //пользователь не найден - проверка пройдена
-            $data = Yii::$app->request->getBodyParams(); //берем данные из пересланных данных по JSON --- данные считаны
-            $users = new Users(); //создаем нового ПУСТОГО пользователя --- создан
-            $users->id = $id; //переписываем id созданного пользователя
-            $users->setAttributes($data,false); //загрузка данных из JSON --- загрузка успешна
-            $users->save(); //сохраняем изменения
+            $data = Yii::$app->request->getBodyParams();
+            $users = new Users();
+            $users->id = $id;
+            $users->setAttributes($data,false);
+            $users->save();
             return $users->attributes;
         }
-        else
+        else // PUT
         {
-            //return("EXSIST"); // пользователь существует - проверка пройдена
-            $data = Yii::$app->request->getBodyParams(); //берем данные из пересланных данных по JSON --- данные считаны
-            $users->setAttributes($data,false); //загрузка данных из JSON --- загрузка успешна
-            $users->update(); //обновляем внесенные изменения
+            $data = Yii::$app->request->getBodyParams();
+            $users->setAttributes($data,false);
+            $users->update();
             return $users->attributes;
         }
     }
 
     public function actionPutfriends($user_id)
     {
-        $data = Yii::$app->request->getBodyParams(); // id друзей пользоваетеля
-        $users = Users::findOne($user_id); // найти позьзователя через его id
+        $data = Yii::$app->request->getBodyParams();
+        $users = Users::findOne($user_id);
         if($users === null)
         {
-            throw new NotFoundHttpException(); // костыль 404
+            throw new NotFoundHttpException();
         }
-        $users->setfriends($data); // вызываем метод из модели метод setfriends и передаем в него массив id всех друзей
-        return("PUT FRIENDS"); //заглушка
+        $users->setfriends($data);
+        return("PUT FRIENDS");
     }
 }
