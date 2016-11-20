@@ -21,9 +21,14 @@ class UsersController extends Controller
        return("HELLO!");
     }
 
-    public function actionGet()
+    /**
+     * Added parameter id to match reroute pattern in the urlManager
+     * @param $id
+     * @return array
+     */
+    public function actionGet($id)
     {
-        $id = Yii::$app->request->get('id');
+        //$id = Yii::$app->request->get('id');
         $users = Users::findOne($id);
         return $users->attributes;
     }
@@ -43,12 +48,20 @@ class UsersController extends Controller
         $users = Users::findOne($id);
         if($users === null) // POST
         {
-            $data = Yii::$app->request->getBodyParams();
-            $users = new Users();
-            $users->id = $id;
-            $users->setAttributes($data,false);
-            $users->save();
-            return $users->attributes;
+            /*
+             * $data = Yii::$app->request->getBodyParams();
+               $users = new Users();
+               $users->id = $id;
+               $users->setAttributes($data,false);
+               $users->save();
+               return $users->attributes;
+            */
+             /**
+             * Since this code is completely identical to the actionPost method,
+             * it should be replaced with the following:
+             */
+            return $this->actionPost($id);
+
         }
         else // PUT
         {
