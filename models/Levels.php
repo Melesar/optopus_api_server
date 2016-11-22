@@ -20,4 +20,5 @@ class Levels extends ActiveRecord
             ->viaTable("users_on_levels",["level_id"=>"id"]) // "level_id" of Users_on_levels to "id" of Levels
             ->all();
     }
+
 }

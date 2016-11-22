@@ -17,11 +17,6 @@ use yii\web\NotFoundHttpException;
 
 class LevelsController extends Controller
 {
-    /**
-     * What's wrong with this one?
-     *
-     * @return array|mixed
-     */
     public function actionGetdata()
     {
         return Yii::$app->request->get('id');
@@ -32,32 +27,11 @@ class LevelsController extends Controller
     }
     public function actionPutdata($id)
     {
-        /*
-        if($level === null) // POST
-        {
-            $data = Yii::$app->request->getBodyParams();
-            $level = new Levels();
-            $level->id = $id;
-            $level->setAttributes($data,false);
-            $level->save();
-            return $level->attributes;
-        }
-        else // PUT
-        {
-            $data = Yii::$app->request->getBodyParams();
-            $level->setAttributes($data,false);
-            $level->save();
-            return $level->attributes;
-        }
-        */
-        /**
-         * These conditional states duplicate too much common logic, which is discouraged.
-         * They should be merged as following:
-         */
         $level = Levels::findone($id);
         $data = Yii::$app->request->getBodyParams();
 
-        if ($level === null) {
+        if ($level == null)
+        {
             $level = new Levels();          /**Create new level if it wasn't found in db*/
             $level->id = $id;
         }
@@ -74,21 +48,22 @@ class LevelsController extends Controller
         if($user != null) // user was found in db
         {
             return $user->getProgress();
-        } else {
+        }
+        else
+        {
             throw new NotFoundHttpException();  /** User wasn't found - send an 404 error */
         }
     }
     public function actionPostprogress()
     {
         $data = Yii::$app->request->getBodyParams();
-        $user = Users::findOne($data['user_id']); // ������ � �������� �� ������ user_id
+        $user = Users::findOne($data['user_id']);
 
-        if ($user == null) {
+        if ($user == null)
+        {
             throw new NotFoundHttpException();   /** Generate 404 if there is no such user */
         }
-
-        $user->updateProgress($data);
-        return ("POST PROGRESS");
+        return $user->updateProgress($data);
 
     }
     public function actionPutprogress()
@@ -97,7 +72,16 @@ class LevelsController extends Controller
     }
     public function actionScore()
     {
-        return("GET SCORE");
-    }
+        $user_id = Yii::$app->request->get("user_id");
+        $level_id = Yii::$app->request->get("level_id");
+        $user = Users::findOne($user_id);
+        $level = Levels::findOne($level_id);
 
+        if ($user == null)
+        {
+            throw new NotFoundHttpException();
+        }
+
+        return $user->getScore($level);
+    }
 }

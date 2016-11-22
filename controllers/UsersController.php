@@ -15,12 +15,6 @@ use yii\web\NotFoundHttpException;
 
 class UsersController extends Controller
 {
-
-    public function actionData()
-    {
-       return("HELLO!");
-    }
-
     /**
      * Added parameter id to match reroute pattern in the urlManager
      * @param $id
@@ -28,7 +22,6 @@ class UsersController extends Controller
      */
     public function actionGet($id)
     {
-        //$id = Yii::$app->request->get('id');
         $users = Users::findOne($id);
         return $users->attributes;
     }
@@ -46,24 +39,11 @@ class UsersController extends Controller
     public function actionPut($id)
     {
         $users = Users::findOne($id);
-        if($users === null) // POST
+        if($users == null)
         {
-            /*
-             * $data = Yii::$app->request->getBodyParams();
-               $users = new Users();
-               $users->id = $id;
-               $users->setAttributes($data,false);
-               $users->save();
-               return $users->attributes;
-            */
-             /**
-             * Since this code is completely identical to the actionPost method,
-             * it should be replaced with the following:
-             */
             return $this->actionPost($id);
-
         }
-        else // PUT
+        else
         {
             $data = Yii::$app->request->getBodyParams();
             $users->setAttributes($data,false);
@@ -76,7 +56,7 @@ class UsersController extends Controller
     {
         $data = Yii::$app->request->getBodyParams();
         $users = Users::findOne($user_id);
-        if($users === null)
+        if($users == null)
         {
             throw new NotFoundHttpException();
         }
