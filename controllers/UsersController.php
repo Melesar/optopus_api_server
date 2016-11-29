@@ -12,6 +12,7 @@ use app\models\Users;
 use yii\rest\Controller;
 use yii;
 use yii\web\NotFoundHttpException;
+use yii\web\BadRequestHttpException;
 
 class UsersController extends Controller
 {
@@ -20,14 +21,27 @@ class UsersController extends Controller
      * @param $id
      * @return array
      */
-    public function actionGet($id)
+    public function actionGet()
     {
+        if(is_numeric(Yii::$app->request->get("id")) == false) //id isn't a number
+        {
+            throw new BadRequestHttpException();
+        }
+        $id = Yii::$app->request->get("id");
         $users = Users::findOne($id);
+        if($users == null)
+        {
+            throw new NotFoundHttpException();
+        }
         return $users->attributes;
     }
 
     public function actionPost($id)
     {
+        if(is_numeric($id) == false)
+        {
+            throw new BadRequestHttpException();
+        }
         $data = Yii::$app->request->getBodyParams();
         $users = new Users();
         $users->id=$id;
@@ -38,6 +52,10 @@ class UsersController extends Controller
 
     public function actionPut($id)
     {
+        if(is_numeric($id) == false)
+        {
+            throw new BadRequestHttpException();
+        }
         $users = Users::findOne($id);
         if($users == null)
         {
@@ -54,6 +72,10 @@ class UsersController extends Controller
 
     public function actionPutfriends($user_id)
     {
+        if(is_numeric($user_id) == false)
+        {
+            throw new BadRequestHttpException();
+        }
         $data = Yii::$app->request->getBodyParams();
         $users = Users::findOne($user_id);
         if($users == null)

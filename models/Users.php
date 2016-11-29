@@ -128,6 +128,7 @@ class Users extends ActiveRecord
                                               ON users_on_levels.user_id = friendship.friend_id
                                               WHERE friendship.user_id=:id_u
                                               AND level_id=:id_l",$params)->queryOne();
+        if($req == null) return("NO FRIENDS AT THIS LEVEL HAS BEEN FOUND");
         return $req;
     }
 

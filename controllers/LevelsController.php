@@ -13,20 +13,42 @@ use app\models\Levels;
 use app\models\Users; // added to find user_id in actionGetprogress
 use yii\rest\Controller;
 use Yii;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 
 class LevelsController extends Controller
 {
     public function actionGetdata()
     {
-        return Yii::$app->request->get('id');
+        if(is_numeric(Yii::$app->request->get("id")) == false)
+        {
+            throw new BadRequestHttpException();
+        }
+        $id =  Yii::$app->request->get('id');
+        $level = Levels::findOne($id);
+        if($level != null)
+        {
+            return $id;
+        }
+        else
+        {
+            throw new NotFoundHttpException();
+        }
     }
     public function actionPostdata($id)
     {
+        if(is_numeric($id) == false)
+        {
+            throw new BadRequestHttpException();
+        }
         return $this->actionPutdata($id);   /** Reroute to the PUT action */
     }
     public function actionPutdata($id)
     {
+        if(is_numeric($id) == false)
+        {
+            throw new BadRequestHttpException();
+        }
         $level = Levels::findone($id);
         $data = Yii::$app->request->getBodyParams();
 
@@ -43,6 +65,10 @@ class LevelsController extends Controller
     }
     public function actionGetprogress()
     {
+        if(is_numeric(Yii::$app->request->get("user_id")) == false)
+        {
+            throw new BadRequestHttpException();
+        }
         $user_id = Yii::$app->request->get("user_id");
         $user = Users::findOne($user_id);
         if($user != null) // user was found in db
@@ -57,6 +83,12 @@ class LevelsController extends Controller
     public function actionPostprogress()
     {
         $data = Yii::$app->request->getBodyParams();
+
+        if(is_numeric(Yii::$app->request->get("user_id")) == false)
+        {
+            throw new BadRequestHttpException();
+        }
+
         $user = Users::findOne($data['user_id']);
 
         if ($user == null)
@@ -72,12 +104,16 @@ class LevelsController extends Controller
     }
     public function actionScore()
     {
+        if(is_numeric(Yii::$app->request->get("user_id")) == false || is_numeric(Yii::$app->request->get("level_id")) == false)
+        {
+            throw new BadRequestHttpException();
+        }
         $user_id = Yii::$app->request->get("user_id");
         $level_id = Yii::$app->request->get("level_id");
         $user = Users::findOne($user_id);
         $level = Levels::findOne($level_id);
 
-        if ($user == null)
+        if ($user == null || $level == null)
         {
             throw new NotFoundHttpException();
         }
