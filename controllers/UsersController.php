@@ -42,6 +42,11 @@ class UsersController extends Controller
         {
             throw new BadRequestHttpException();
         }
+        $users = Users::findOne($id);
+        if($users != null)
+        {
+            throw new BadRequestHttpException();
+        }
         $data = Yii::$app->request->getBodyParams();
         $users = new Users();
         $users->id=$id;
@@ -59,7 +64,8 @@ class UsersController extends Controller
         $users = Users::findOne($id);
         if($users == null)
         {
-            return $this->actionPost($id);
+            //return $this->actionPost($id);
+            throw new yii\web\ConflictHttpException(); //409 – user already exist
         }
         else
         {

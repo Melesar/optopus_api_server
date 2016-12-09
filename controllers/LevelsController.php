@@ -28,7 +28,7 @@ class LevelsController extends Controller
         $level = Levels::findOne($id);
         if($level != null)
         {
-            return $id;
+            return $level->attributes;
         }
         else
         {
