@@ -16,14 +16,9 @@ use yii\web\BadRequestHttpException;
 
 class UsersController extends Controller
 {
-    /**
-     * Added parameter id to match reroute pattern in the urlManager
-     * @param $id
-     * @return array
-     */
     public function actionGet()
     {
-        if(is_numeric(Yii::$app->request->get("id")) == false) //id isn't a number
+        if(!is_numeric(Yii::$app->request->get("id"))) //id isn't a number
         {
             throw new BadRequestHttpException();
         }
@@ -38,7 +33,7 @@ class UsersController extends Controller
 
     public function actionPost($id)
     {
-        if(is_numeric($id) == false)
+        if(!is_numeric($id))
         {
             throw new BadRequestHttpException();
         }
@@ -57,15 +52,15 @@ class UsersController extends Controller
 
     public function actionPut($id)
     {
-        if(is_numeric($id) == false)
+        if(!is_numeric($id))
         {
             throw new BadRequestHttpException();
         }
         $users = Users::findOne($id);
         if($users == null)
         {
-            //return $this->actionPost($id);
-            throw new yii\web\ConflictHttpException(); //409 – user already exist
+            return $this->actionPost($id);
+            //throw new yii\web\ConflictHttpException(); //409 – user already exist
         }
         else
         {
@@ -78,7 +73,7 @@ class UsersController extends Controller
 
     public function actionPutfriends($user_id)
     {
-        if(is_numeric($user_id) == false)
+        if(!is_numeric($user_id))
         {
             throw new BadRequestHttpException();
         }
@@ -91,4 +86,17 @@ class UsersController extends Controller
         $users->setfriends($data);
         return("PUT FRIENDS");
     }
+
+    public function actionError(){
+        $exception = new yii\web\HttpException(404, Yii::t('yii', 'Page not found.'));
+
+        if($exception !== null) {
+            return ['name'      =>   $exception->getName(),
+                    'code'      =>   $exception->statusCode,
+                    'message'   =>   $exception->getMessage()];
+
+        }
+    }
+
+
 }

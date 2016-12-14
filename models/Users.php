@@ -27,38 +27,69 @@ class Users extends ActiveRecord
 
     public function setFriends($id_friends)
     {
-        if($id_friends != null) // check the array
+        Friendship::deleteAll(['user_id'=>$this->id]);
+        for($i=0;$i<count($id_friends);$i++)
         {
-            $id = $this->id; // $id assign the value of current user (he's id)
-            Yii::$app->db->createCommand()->delete("friendship", "user_id = $id")->execute(); // 'clearance' of the table "friendship"
-            for ($i = 0, $f_size = count($id_friends); $i < $f_size; $i++)
-                Yii::$app->db->createCommand()->insert('friendship', ['user_id' => $id, 'friend_id' => $id_friends[$i]])->execute();
-                // the insert of the array "id_friends", which is related to our user ("id"),
-                // to the empty table "friendship"
+            $f = new Friendship();
+            $f->user_id = $this->id;
+            $f->friend_id = $id_friends[$i];
+            $f->save();
         }
     }
+
+    public function getCurrentLevelId(){
+        $usersOnLevels = UsersOnLevels::find()
+            ->select(['level_id'])
+            ->where(['user_id' => $this->id])
+            ->all();
+        $levels_id = [];
+        foreach($usersOnLevels as $lvl)
+            $levels_id[] = $lvl->level_id;
+        $levels = Levels::find()
+            ->where(['in','id',$levels_id])
+            ->all();
+        $maxLvlId = 0;
+        $maxLvlNumber = 0;
+        foreach($levels as $lvl)
+            if($lvl->number >= $maxLvlNumber) {
+                $maxLvlId = $lvl->id;
+                $maxLvlNumber = $lvl->number;
+            }
+
+        return $maxLvlId;
+    }
+
     public function getProgress()
     {
-        $user = $this->id;
-        $param = [':id_u' => $user];
-        $user_friends = Yii::$app->db->createCommand("SELECT friend_id FROM friendship WHERE user_id=:id_u",$param)->queryAll();
-        $req=[];
-        for($i = 0,$user_size = count($user_friends); $i < $user_size; $i++)
-        {
-            $param = [':id_u' => $user_friends[$i]['friend_id']];
-            $level = Yii::$app->db->createCommand("SELECT level_id, number FROM users_on_levels
-                                                    JOIN levels ON users_on_levels.level_id = levels.id WHERE user_id=:id_u
-                                                    ORDER BY number DESC, level_id DESC",$param)->queryOne();
-            $params = [':id_u' => $user_friends[$i]['friend_id'], ':id_l' => $level['level_id']];
-            $req[$i] = Yii::$app->db->createCommand("SELECT user_id,
-                                                            level_id AS current_level_id,
-                                                            reached_at
-                                                     FROM users_on_levels
-                                                     WHERE user_id=:id_u AND level_id=:id_l",$params)->queryOne();
-        }
+        $friends = Friendship::find()
+            ->select(['friend_id'])
+            ->where(['user_id'=>$this->id])
+            ->all();
+        $result = [];
 
-        file_put_contents("d:/file.txt", print_r($req, true));
-        return $req;
+        foreach($friends as $fr) {
+
+            $friend = Users::find()
+                ->where(['id' =>$fr->friend_id])
+                ->one();
+
+            $frCurLevel = $friend->getCurrentLevelId();
+            if ($frCurLevel != 0){
+                $level = UsersOnLevels::find()
+                    ->where(['user_id' => $friend->id,
+                        'level_id' => $frCurLevel])
+                    ->one();
+            } else {
+                $level = new UsersOnLevels();
+                $level->level_id = null;
+                $level->reached_at = null;
+            }
+
+            $result[] = ['user_id' => $friend->id,
+                        'current_level_id' => $level->level_id,
+                        'reached_at' => $level->reached_at];
+        }
+        return $result;
     }
     public function updateProgress($data)
     {
@@ -73,8 +104,8 @@ class Users extends ActiveRecord
 
             if($req == null)
                 Yii::$app->db->createCommand()
-                    ->insert('users_on_levels', $data)  /** $data itself contains all those key-value pairs that */
-                    ->execute();                        /** you specified manually */
+                    ->insert('users_on_levels', $data)  // $data itself contains all those key-value pairs that
+                    ->execute();                        // you specified manually
             else
                 Yii::$app->db->createCommand()
                     ->update("users_on_levels", $data, ['user_id' => $id_u, 'level_id' => $id_l])
@@ -120,21 +151,23 @@ class Users extends ActiveRecord
 
     public function getScore($level) // new method
     {
-        $user = $this->id;
-        $params = [':id_u' => $user, ':id_l' => $level['id']];
-        $req = Yii::$app->db->createCommand(" SELECT friend_id, max_score AS score
-                                              FROM users_on_levels
-                                              LEFT JOIN friendship
-                                              ON users_on_levels.user_id = friendship.friend_id
-                                              WHERE friendship.user_id=:id_u
-                                              AND level_id=:id_l
-											  UNION 
-											  SELECT user_id, max_score AS score
-											  FROM users_on_levels
-											  WHERE user_id=:id_u
-											  AND level_id=:id_l",$params)->queryOne();
-        if($req == null) return("NO FRIENDS AT THIS LEVEL HAS BEEN FOUND");
-        return $req;
+        $friends = Friendship::find()
+
+            ->select(['friend_id'])
+            ->where(['user_id'=>$this->id])
+            ->all();
+        $friends_id = [];
+        foreach($friends as $fr)
+            $friends_id[] = $fr->friend_id;
+
+        $scores = UsersOnLevels::find()
+            ->select(['user_id','max_score'])
+            ->where(['level_id'=>$level->id])
+            ->andWhere(['in','user_id',$friends_id])
+            ->all();
+        if($scores == null)
+            return("NO FRIENDS AT THIS LEVEL HAS BEEN FOUND");
+        return $scores;
     }
 
 }

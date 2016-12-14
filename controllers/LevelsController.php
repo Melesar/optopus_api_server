@@ -11,6 +11,7 @@ namespace app\controllers;
 
 use app\models\Levels;
 use app\models\Users; // added to find user_id in actionGetprogress
+use yii\rest\ActiveController;
 use yii\rest\Controller;
 use Yii;
 use yii\web\BadRequestHttpException;
@@ -20,7 +21,7 @@ class LevelsController extends Controller
 {
     public function actionGetdata()
     {
-        if(is_numeric(Yii::$app->request->get("id")) == false)
+        if(!is_numeric(Yii::$app->request->get("id")))
         {
             throw new BadRequestHttpException();
         }
@@ -37,7 +38,7 @@ class LevelsController extends Controller
     }
     public function actionPostdata($id)
     {
-        if(is_numeric($id) == false)
+        if(!is_numeric($id))
         {
             throw new BadRequestHttpException();
         }
@@ -45,7 +46,7 @@ class LevelsController extends Controller
     }
     public function actionPutdata($id)
     {
-        if(is_numeric($id) == false)
+        if(!is_numeric($id))
         {
             throw new BadRequestHttpException();
         }
@@ -65,7 +66,7 @@ class LevelsController extends Controller
     }
     public function actionGetprogress()
     {
-        if(is_numeric(Yii::$app->request->get("user_id")) == false)
+        if(!is_numeric(Yii::$app->request->get("user_id")))
         {
             throw new BadRequestHttpException();
         }
@@ -84,7 +85,7 @@ class LevelsController extends Controller
     {
         $data = Yii::$app->request->getBodyParams();
 
-        if(is_numeric(Yii::$app->request->get("user_id")) == false)
+        if(!is_numeric(Yii::$app->request->get("user_id")))
         {
             throw new BadRequestHttpException();
         }
@@ -104,7 +105,7 @@ class LevelsController extends Controller
     }
     public function actionScore()
     {
-        if(is_numeric(Yii::$app->request->get("user_id")) == false || is_numeric(Yii::$app->request->get("level_id")) == false)
+        if(!is_numeric(Yii::$app->request->get("user_id")) || !is_numeric(Yii::$app->request->get("level_id")))
         {
             throw new BadRequestHttpException();
         }
