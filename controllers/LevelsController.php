@@ -17,6 +17,11 @@ use Yii;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 
+
+/**
+ * You should get rid of request params validation checks in your actions,
+ * since they are handled in the url manager
+ */
 class LevelsController extends Controller
 {
     public function actionGetdata()

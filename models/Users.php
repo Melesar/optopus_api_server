@@ -28,6 +28,15 @@ class Users extends ActiveRecord
     public function setFriends($id_friends)
     {
         Friendship::deleteAll(['user_id'=>$this->id]);
+        /**
+         * Search for foreach construction in php.
+         * Should look something like
+         * for ($friendId in $id_friends) {
+         *  $f = new Friendship();
+            $f->load(['user_id' => $this->id, 'friend_id' => $friendId], "");
+            $f->save();
+         * }
+         */
         for($i=0;$i<count($id_friends);$i++)
         {
             $f = new Friendship();
@@ -37,7 +46,15 @@ class Users extends ActiveRecord
         }
     }
 
-    public function getCurrentLevelId(){
+    /**
+     * This thing is terrific.
+     * Consider using ActiveRecord::hasMany for merging tables
+     * and sql orderBy for sorting. Please, never use any kind of custom sort
+     * with database entities
+     */
+    public function getCurrentLevelId()
+    {
+
         $usersOnLevels = UsersOnLevels::find()
             ->select(['level_id'])
             ->where(['user_id' => $this->id])
@@ -67,8 +84,13 @@ class Users extends ActiveRecord
             ->all();
         $result = [];
 
+        /**
+         * The same here. Remember, if you are using 'for' loop to iterate through the
+         * database, you probably doing something wrong
+         */
         foreach($friends as $fr) {
 
+            /** Users::findOne($fr->friend_id) would be much better */
             $friend = Users::find()
                 ->where(['id' =>$fr->friend_id])
                 ->one();
@@ -98,15 +120,33 @@ class Users extends ActiveRecord
             $id_u = $data['user_id'];
             $id_l = $data['level_id'];
             $params = [':id_u' => $id_u, ':id_l' => $id_l];
+            /**
+             * $req = UsersOnLevels::findOne(['user_id' => $id_u, 'level_id' => $id_l]);
+             */
             $req = Yii::$app->db->createCommand("SELECT * FROM users_on_levels WHERE user_id=:id_u AND level_id=:id_l",$params)->queryOne();
 
             $data = $this->updateDates($data, $req);
 
+            /** Requires active record refactoring */
             if($req == null)
+                /**
+                 * Should be something like
+                 * $newEntity = new UsersOnLevels();
+                 * if ($newEntity->load($data)) {
+                 *  $newEntity->save()
+                 * }
+                 */
                 Yii::$app->db->createCommand()
                     ->insert('users_on_levels', $data)  // $data itself contains all those key-value pairs that
                     ->execute();                        // you specified manually
             else
+                /**
+                 * Should be something like
+                 * $entity = UsersOnLevels::findOne(['user_id' => $id_u, 'level_id' => $id_l]);
+                 * if ($entity->load($data)) {
+                 *  $entity->save();
+                 * }
+                 */
                 Yii::$app->db->createCommand()
                     ->update("users_on_levels", $data, ['user_id' => $id_u, 'level_id' => $id_l])
                     ->execute();
@@ -151,11 +191,21 @@ class Users extends ActiveRecord
 
     public function getScore($level) // new method
     {
+        /**
+         * This method still looks like a bicycle.
+         * Please, search for ActiveRecord::findOne and ActiveRecord::findAll method,
+         * they have pretty much everything you need here
+         */
         $friends = Friendship::find()
-
             ->select(['friend_id'])
             ->where(['user_id'=>$this->id])
             ->all();
+
+        /**
+         * Especially weird-looking are 'for' loops when manipulating with databases.
+         * There is no case which should be solved with for loop rather then with sql
+         * (active record in this case)
+         */
         $friends_id = [];
         foreach($friends as $fr)
             $friends_id[] = $fr->friend_id;

@@ -14,6 +14,10 @@ use yii;
 use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;
 
+/**
+ * You should get rid of request params validation checks in your actions,
+ * since they are handled in the url manager
+ */
 class UsersController extends Controller
 {
     public function actionGet()
@@ -60,7 +64,7 @@ class UsersController extends Controller
         if($users == null)
         {
             return $this->actionPost($id);
-            //throw new yii\web\ConflictHttpException(); //409 – user already exist
+            //throw new yii\web\ConflictHttpException(); //409 ï¿½ user already exist
         }
         else
         {
@@ -90,6 +94,7 @@ class UsersController extends Controller
     public function actionError(){
         $exception = new yii\web\HttpException(404, Yii::t('yii', 'Page not found.'));
 
+        /** This exception is never null since you've just initialized it with 'new' keyword */
         if($exception !== null) {
             return ['name'      =>   $exception->getName(),
                     'code'      =>   $exception->statusCode,
