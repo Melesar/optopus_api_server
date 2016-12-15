@@ -8,8 +8,8 @@
 
 namespace app\models;
 
-
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii;
 
 class Users extends ActiveRecord
@@ -27,21 +27,11 @@ class Users extends ActiveRecord
 
     public function setFriends($id_friends)
     {
-        Friendship::deleteAll(['user_id'=>$this->id]);
-        /**
-         * Search for foreach construction in php.
-         * Should look something like
-         * for ($friendId in $id_friends) {
-         *  $f = new Friendship();
-            $f->load(['user_id' => $this->id, 'friend_id' => $friendId], "");
-            $f->save();
-         * }
-         */
-        for($i=0;$i<count($id_friends);$i++)
+        Friendship::deleteAll(['user_id' => $this->id]);
+        foreach ($id_friends as $friendId)
         {
             $f = new Friendship();
-            $f->user_id = $this->id;
-            $f->friend_id = $id_friends[$i];
+            $f->load(['user_id' => $this->id, 'friend_id' => $friendId], "");
             $f->save();
         }
     }
@@ -54,48 +44,59 @@ class Users extends ActiveRecord
      */
     public function getCurrentLevelId()
     {
-
-        $usersOnLevels = UsersOnLevels::find()
-            ->select(['level_id'])
-            ->where(['user_id' => $this->id])
-            ->all();
-        $levels_id = [];
-        foreach($usersOnLevels as $lvl)
-            $levels_id[] = $lvl->level_id;
-        $levels = Levels::find()
-            ->where(['in','id',$levels_id])
-            ->all();
-        $maxLvlId = 0;
-        $maxLvlNumber = 0;
-        foreach($levels as $lvl)
-            if($lvl->number >= $maxLvlNumber) {
-                $maxLvlId = $lvl->id;
-                $maxLvlNumber = $lvl->number;
-            }
-
-        return $maxLvlId;
+        /*I also didn't come to the way of using hasMany/hasOne
+        I've just avoided like it's shown below*/
+        $userOnLevel = UsersOnLevels::findAll(['user_id' => $this->id]);
+        $userOnLevel = ArrayHelper::getColumn($userOnLevel, 'level_id');
+        $level = Levels::findAll(['id' => $userOnLevel]);
+        $level = ArrayHelper::toArray($level,['id','number']);
+        ArrayHelper::multisort($level,['id','number'],[SORT_DESC,SORT_DESC]);
+        return ArrayHelper::getValue($level[0],['id']);
     }
 
     public function getProgress()
     {
-        $friends = Friendship::find()
-            ->select(['friend_id'])
-            ->where(['user_id'=>$this->id])
-            ->all();
         $result = [];
+        $friends = Friendship::findAll(['user_id' => $this->id]);
+        $friends = ArrayHelper::getColumn($friends,'friend_id');
+        $friend = Users::findAll(['id' => $friends]);
+        foreach($friend as $f)
+        {
+            $lvl = $f->getCurrentLevelId();
+            $level = UsersOnLevels::findOne(['user_id' => $f->id,'level_id' => $lvl]);
+            /*I understand, that above string shouldn't exist at all, but I have no idea how to avoid using it*/
+            $result[] = ['user_id' => $f->id,
+                'current_level_id' => $level->level_id,
+                'reached_at' => $level->reached_at];
+        }
+        return $result;
 
-        /**
-         * The same here. Remember, if you are using 'for' loop to iterate through the
-         * database, you probably doing something wrong
-         */
-        foreach($friends as $fr) {
+        //$fr_lvl = Users::hasMany(UsersOnLevels::findAll(['level_id' => $lvl]),['id'=>'user_id']);
 
-            /** Users::findOne($fr->friend_id) would be much better */
-            $friend = Users::find()
-                ->where(['id' =>$fr->friend_id])
-                ->one();
 
-            $frCurLevel = $friend->getCurrentLevelId();
+
+                                                                    /**
+                                                                     * The same here. Remember, if you are using 'for' loop to iterate through the
+                                                                     * database, you probably doing something wrong
+                                                                     */
+//        //foreach($friends as $fr)
+//        //{
+//                                                                    /** Users::findOne($fr->friend_id) would be much better */
+//            /*$friend = Users::find()
+//                ->where(['id' =>$fr->friend_id])
+//                ->one();*/
+//            $friend = Users::findAll(['id' => $friends]);
+//            $fr_lvl = [];
+//            $level = [];
+//            foreach($friend as $f)
+//                $fr_lvl[] = $f->getCurrentLevelId();
+//                                                        /*$level[] = UsersOnLevels::findOne([['user_id' => $f['id'],
+//                                                            'level_id' => $fr_lvl]]);*/
+//            $levels = UsersOnLevels::findAll(['user_id' => $friends,'level_id' => $fr_lvl]);
+
+       // return $levels;
+
+            /*$frCurLevel = $friend->getCurrentLevelId();
             if ($frCurLevel != 0){
                 $level = UsersOnLevels::find()
                     ->where(['user_id' => $friend->id,
@@ -110,46 +111,42 @@ class Users extends ActiveRecord
             $result[] = ['user_id' => $friend->id,
                         'current_level_id' => $level->level_id,
                         'reached_at' => $level->reached_at];
-        }
-        return $result;
+        //}*/
     }
     public function updateProgress($data)
     {
         if($data['user_id'] != null && $data['level_id'] != null)
         {
-            $id_u = $data['user_id'];
-            $id_l = $data['level_id'];
-            $params = [':id_u' => $id_u, ':id_l' => $id_l];
-            /**
-             * $req = UsersOnLevels::findOne(['user_id' => $id_u, 'level_id' => $id_l]);
-             */
-            $req = Yii::$app->db->createCommand("SELECT * FROM users_on_levels WHERE user_id=:id_u AND level_id=:id_l",$params)->queryOne();
-
+            $req = UsersOnLevels::findOne(['user_id' => $data['user_id'], 'level_id' => $data['level_id']]);
             $data = $this->updateDates($data, $req);
-
-            /** Requires active record refactoring */
             if($req == null)
-                /**
-                 * Should be something like
-                 * $newEntity = new UsersOnLevels();
-                 * if ($newEntity->load($data)) {
-                 *  $newEntity->save()
-                 * }
-                 */
-                Yii::$app->db->createCommand()
-                    ->insert('users_on_levels', $data)  // $data itself contains all those key-value pairs that
-                    ->execute();                        // you specified manually
+            {
+                                                                                /**
+                                                                                 * Should be something like
+                                                                                 * $newEntity = new UsersOnLevels();
+                                                                                 * if ($newEntity->load($data)) {
+                                                                                 *  $newEntity->save()
+                                                                                 * }
+                                                                                 */
+                $newOne = new UsersOnLevels();
+                $newOne->setAttributes($data,false);
+                $newOne->save();
+                /*I used setAttributes() instead of load(), because second one
+                requires a value in the field $formName, which I didn't get at all*/
+            }
             else
-                /**
-                 * Should be something like
-                 * $entity = UsersOnLevels::findOne(['user_id' => $id_u, 'level_id' => $id_l]);
-                 * if ($entity->load($data)) {
-                 *  $entity->save();
-                 * }
-                 */
-                Yii::$app->db->createCommand()
-                    ->update("users_on_levels", $data, ['user_id' => $id_u, 'level_id' => $id_l])
-                    ->execute();
+            {
+                                                                        /**
+                                                                         * Should be something like
+                                                                         * $entity = UsersOnLevels::findOne(['user_id' => $id_u, 'level_id' => $id_l]);
+                                                                         * if ($entity->load($data)) {
+                                                                         *  $entity->save();
+                                                                         * }
+                                                                         */
+                $oldOne = UsersOnLevels::findOne(['user_id' => $data['user_id'], 'level_id' => $data['level_id']]);
+                $oldOne->setAttributes($data,false);
+                $oldOne->save();
+            }
         }
     }
 
@@ -191,33 +188,18 @@ class Users extends ActiveRecord
 
     public function getScore($level) // new method
     {
-        /**
-         * This method still looks like a bicycle.
-         * Please, search for ActiveRecord::findOne and ActiveRecord::findAll method,
-         * they have pretty much everything you need here
-         */
-        $friends = Friendship::find()
-            ->select(['friend_id'])
-            ->where(['user_id'=>$this->id])
-            ->all();
-
-        /**
-         * Especially weird-looking are 'for' loops when manipulating with databases.
-         * There is no case which should be solved with for loop rather then with sql
-         * (active record in this case)
-         */
-        $friends_id = [];
-        foreach($friends as $fr)
-            $friends_id[] = $fr->friend_id;
-
-        $scores = UsersOnLevels::find()
-            ->select(['user_id','max_score'])
-            ->where(['level_id'=>$level->id])
-            ->andWhere(['in','user_id',$friends_id])
-            ->all();
-        if($scores == null)
+        $friends = Friendship::findAll(['user_id'=>$this->id]);
+        $friends_id = ArrayHelper::getColumn($friends,'friend_id');
+        $result = [];
+        $scores = UsersOnLevels::findAll(['level_id'=>$level->id,'user_id'=>$friends_id]);
+        /*To create result I used foreach -
+        if you know how to extract values with out it, please explain me how*/
+        foreach ($scores as $sc)
+            $result[] = ['user_id' => $sc['user_id'],
+                       'max_score' => $sc['max_score']];
+        if($result == null)
             return("NO FRIENDS AT THIS LEVEL HAS BEEN FOUND");
-        return $scores;
+        return $result;
     }
 
 }

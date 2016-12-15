@@ -22,10 +22,6 @@ class UsersController extends Controller
 {
     public function actionGet()
     {
-        if(!is_numeric(Yii::$app->request->get("id"))) //id isn't a number
-        {
-            throw new BadRequestHttpException();
-        }
         $id = Yii::$app->request->get("id");
         $users = Users::findOne($id);
         if($users == null)
@@ -37,10 +33,6 @@ class UsersController extends Controller
 
     public function actionPost($id)
     {
-        if(!is_numeric($id))
-        {
-            throw new BadRequestHttpException();
-        }
         $users = Users::findOne($id);
         if($users != null)
         {
@@ -56,15 +48,10 @@ class UsersController extends Controller
 
     public function actionPut($id)
     {
-        if(!is_numeric($id))
-        {
-            throw new BadRequestHttpException();
-        }
         $users = Users::findOne($id);
         if($users == null)
         {
             return $this->actionPost($id);
-            //throw new yii\web\ConflictHttpException(); //409 � user already exist
         }
         else
         {
@@ -77,10 +64,6 @@ class UsersController extends Controller
 
     public function actionPutfriends($user_id)
     {
-        if(!is_numeric($user_id))
-        {
-            throw new BadRequestHttpException();
-        }
         $data = Yii::$app->request->getBodyParams();
         $users = Users::findOne($user_id);
         if($users == null)
@@ -91,16 +74,12 @@ class UsersController extends Controller
         return("PUT FRIENDS");
     }
 
-    public function actionError(){
+    public function actionError()
+    {
         $exception = new yii\web\HttpException(404, Yii::t('yii', 'Page not found.'));
-
-        /** This exception is never null since you've just initialized it with 'new' keyword */
-        if($exception !== null) {
-            return ['name'      =>   $exception->getName(),
-                    'code'      =>   $exception->statusCode,
-                    'message'   =>   $exception->getMessage()];
-
-        }
+        return ['name'      =>   $exception->getName(),
+                'code'      =>   $exception->statusCode,
+                'message'   =>   $exception->getMessage()];
     }
 
 
