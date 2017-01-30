@@ -13,7 +13,7 @@ use yii;
 
 class Bundle extends ActiveRecord
 {
-    public $file_name;// = "nomatter_noname.zip"; //name of the file
+    public $file_name; //name of the file
 
     public function rules()
     {

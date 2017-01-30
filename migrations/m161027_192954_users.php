@@ -14,7 +14,7 @@ class m161027_192954_users extends Migration
 
     public function up()
     {
-        $this->createTable('users', [
+       $this->createTable('users', [
             'id' => Schema::TYPE_INTEGER. " PRIMARY KEY",
             'name' => Schema::TYPE_STRING . " NOT NULL",
             'last_name' => Schema::TYPE_STRING. " NOT NULL",
@@ -87,6 +87,8 @@ class m161027_192954_users extends Migration
 
         $this->dropTable('users');
         $this->dropTable('levels');
+
+        $this->dropTable('bundle');
 
         return true;
     }
