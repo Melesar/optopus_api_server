@@ -24,53 +24,47 @@ class BundleController extends Controller
     public function actionPost()
     {
         $newBundle = new Bundle();
-        //$proj_id = Yii::$app->request->get('project_id');
-        //$data = Yii::$app->request->getBodyParams();
-        $newBundle->project_id = '1';
-        $newBundle->name_format = "error";
-        $newBundle->bundle_size = '404';
-        $newBundle->path = "not found";
+        $data = Yii::$app->request->getBodyParams();
+//        $newBundle->project_id = '1';
+//        $newBundle->name_format = "error";
+//        $newBundle->bundle_size = '404';
+//        $newBundle->path = "not found";
+        $newBundle->setAttributes($data,false);
+        if(!$newBundle->save())
+            echo "Changes in DB are not saved!";
 
-        //$newBundle->setAttributes($data,false);
-        $newBundle->save();
-        if($newBundle == null)
-            echo "EMPTY!";
-        return $newBundle->attributes;
+        $binData = fopen($_FILES['byte_array']['tmp_name'],'r');
+        if($binData != null)
+        {
+            $path = Yii::getAlias('@web');
+            $path .= $data['bundle_size'];
 
-//        $binData = fopen($_FILES['byte_array']['tmp_name'],'r');
-//        if($binData != null)
-//        {
-//            $path = Yii::getAlias('@web');
-//            $path .= $data['bundle_size'];
-//
-//            if(!is_dir($path))
-//                mkdir($path);
-//
-//            $path .= "/".$data['name_format'];
-//
-//            if(!is_dir($path))
-//                mkdir($path);
-//
-//            if(!is_uploaded_file($_FILES['byte_array']['tmp_name']))
-//                echo "File \"".$_FILES['byte_array']['name']."\" is not uploaded";
-//            else {
-//                $pathFile = $path . "/" . $_FILES['byte_array']['name'];
-//                move_uploaded_file($_FILES['byte_array']['tmp_name'], $pathFile);
-//
-//
-//                $zip = new \ZipArchive();
-//                $zip->open($pathFile);
-//                //if($zip->open($pathFile))
-//                $zip->extractTo($path);
-//                $zip->close();
-//                if(unlink($pathFile))
-//                    echo 'DELETED';
-//            }
+            if(!is_dir($path))
+                mkdir($path);
 
+            $path .= "/".$data['name_format'];
+
+            if(!is_dir($path))
+                mkdir($path);
+
+            if(!is_uploaded_file($_FILES['byte_array']['tmp_name']))
+                echo "File \"".$_FILES['byte_array']['name']."\" is not uploaded";
+            else {
+                $pathFile = $path . "/" . $_FILES['byte_array']['name'];
+                move_uploaded_file($_FILES['byte_array']['tmp_name'], $pathFile);
+
+                $zip = new \ZipArchive();
+                $zip->open($pathFile);
+                //if($zip->open($pathFile))
+                $zip->extractTo($path);
+                $zip->close();
+                if(unlink($pathFile))
+                    echo 'DELETED';
+            }
+
+            return $newBundle->attributes;
 
             //file_put_contents("D://file.txt", print_r($_FILES, true));
-
-
 
             //echo $_FILES['byte_array']['type'];
 
@@ -79,7 +73,7 @@ class BundleController extends Controller
             //exec('unzip any.zip');
             //$test = fwrite($fp, $contents);
             //fclose($fp);
-//        }
+        }
     }
 
     public function actionGetnumber()

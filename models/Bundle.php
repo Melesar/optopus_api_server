@@ -15,10 +15,11 @@ class Bundle extends ActiveRecord
 {
     public $file_name; //name of the file
 
-    public function rules()
-    {
-        return[
-        [['file_name'],'file','skipOnEmpty' => false, 'mimeTypes' => 'application/zip'],
-        ];
-    }
+//    public function rules()
+//    {
+//        return[
+//            [],
+//            [['file_name'],'file','skipOnEmpty' => false, 'mimeTypes' => 'application/zip'],
+//        ];
+//    }
 }
