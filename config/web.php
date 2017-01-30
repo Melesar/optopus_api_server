@@ -63,8 +63,6 @@ $config = [
                 'POST bundle' => 'bundle/post',
                 'GET bundle/<number:\d+>' => 'bundle/getnumber'
 
-
-
             ],
         ],
 
