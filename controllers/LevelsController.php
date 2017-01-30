@@ -8,13 +8,10 @@
 
 namespace app\controllers;
 
-
 use app\models\Levels;
 use app\models\Users; // added to find user_id in actionGetprogress
-use yii\rest\ActiveController;
 use yii\rest\Controller;
 use Yii;
-use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 
 

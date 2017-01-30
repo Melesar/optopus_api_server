@@ -57,8 +57,11 @@ $config = [
                 'POST levels/progress' => 'levels/postprogress', //возвращаем "POST PROGRESS"
                 'PUT levels/progress' => 'levels/putprogress', //возвращаем "PUT PROGRESS"
                 /******************/
-                'GET levels/score' => 'levels/score' //возвращаем "GET SCORE"
+                'GET levels/score' => 'levels/score', //возвращаем "GET SCORE"
                 //чтобы проверить id вводим любое число после users/ или levels/
+                'GET bundle' => 'bundle/get',
+                'POST bundle' => 'bundle/post',
+                'GET bundle/<number:\d+>' => 'bundle/getnumber'
 
 
 

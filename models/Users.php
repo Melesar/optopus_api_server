@@ -70,48 +70,6 @@ class Users extends ActiveRecord
                 'reached_at' => $level->reached_at];
         }
         return $result;
-
-        //$fr_lvl = Users::hasMany(UsersOnLevels::findAll(['level_id' => $lvl]),['id'=>'user_id']);
-
-
-
-                                                                    /**
-                                                                     * The same here. Remember, if you are using 'for' loop to iterate through the
-                                                                     * database, you probably doing something wrong
-                                                                     */
-//        //foreach($friends as $fr)
-//        //{
-//                                                                    /** Users::findOne($fr->friend_id) would be much better */
-//            /*$friend = Users::find()
-//                ->where(['id' =>$fr->friend_id])
-//                ->one();*/
-//            $friend = Users::findAll(['id' => $friends]);
-//            $fr_lvl = [];
-//            $level = [];
-//            foreach($friend as $f)
-//                $fr_lvl[] = $f->getCurrentLevelId();
-//                                                        /*$level[] = UsersOnLevels::findOne([['user_id' => $f['id'],
-//                                                            'level_id' => $fr_lvl]]);*/
-//            $levels = UsersOnLevels::findAll(['user_id' => $friends,'level_id' => $fr_lvl]);
-
-       // return $levels;
-
-            /*$frCurLevel = $friend->getCurrentLevelId();
-            if ($frCurLevel != 0){
-                $level = UsersOnLevels::find()
-                    ->where(['user_id' => $friend->id,
-                        'level_id' => $frCurLevel])
-                    ->one();
-            } else {
-                $level = new UsersOnLevels();
-                $level->level_id = null;
-                $level->reached_at = null;
-            }
-
-            $result[] = ['user_id' => $friend->id,
-                        'current_level_id' => $level->level_id,
-                        'reached_at' => $level->reached_at];
-        //}*/
     }
     public function updateProgress($data)
     {
@@ -121,13 +79,6 @@ class Users extends ActiveRecord
             $data = $this->updateDates($data, $req);
             if($req == null)
             {
-                                                                                /**
-                                                                                 * Should be something like
-                                                                                 * $newEntity = new UsersOnLevels();
-                                                                                 * if ($newEntity->load($data)) {
-                                                                                 *  $newEntity->save()
-                                                                                 * }
-                                                                                 */
                 $newOne = new UsersOnLevels();
                 $newOne->setAttributes($data,false);
                 $newOne->save();
@@ -136,13 +87,6 @@ class Users extends ActiveRecord
             }
             else
             {
-                                                                        /**
-                                                                         * Should be something like
-                                                                         * $entity = UsersOnLevels::findOne(['user_id' => $id_u, 'level_id' => $id_l]);
-                                                                         * if ($entity->load($data)) {
-                                                                         *  $entity->save();
-                                                                         * }
-                                                                         */
                 $oldOne = UsersOnLevels::findOne(['user_id' => $data['user_id'], 'level_id' => $data['level_id']]);
                 $oldOne->setAttributes($data,false);
                 $oldOne->save();
