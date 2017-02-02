@@ -18,66 +18,45 @@ class BundleController extends Controller
 {
     public function actionGet()
     {
-        return 1;
+        $data = Yii::$app->request->get();
+        $serverBundle = Bundle::findOne([
+            'project_id' => $data['project_id'],
+            'name_format'=> 'location_'.$data['name_format'],
+            'bundle_size'=> $data['bundle_size']
+        ]);
+        if($serverBundle != null)
+            return $serverBundle->packAndSend($data);
+        else
+            return "There is no such a bundle!";
     }
 
     public function actionPost()
     {
         $newBundle = new Bundle();
         $data = Yii::$app->request->getBodyParams();
-//        $newBundle->project_id = '1';
-//        $newBundle->name_format = "error";
-//        $newBundle->bundle_size = '404';
-//        $newBundle->path = "not found";
+        $path = $data['bundle_size']."/".$data['name_format'];
+        $newBundle->unpackAndSave($_FILES['byte_array'], $data);
         $newBundle->setAttributes($data,false);
-        if(!$newBundle->save())
+        $newBundle->setAttribute('path',$path);
+        $newBundle->save();
+
+        if(!$newBundle->save() || $newBundle == null)
             echo "Changes in DB are not saved!";
 
-        $binData = fopen($_FILES['byte_array']['tmp_name'],'r');
-        if($binData != null)
-        {
-            $path = Yii::getAlias('@web');
-            $path .= $data['bundle_size'];
-
-            if(!is_dir($path))
-                mkdir($path);
-
-            $path .= "/".$data['name_format'];
-
-            if(!is_dir($path))
-                mkdir($path);
-
-            if(!is_uploaded_file($_FILES['byte_array']['tmp_name']))
-                echo "File \"".$_FILES['byte_array']['name']."\" is not uploaded";
-            else {
-                $pathFile = $path . "/" . $_FILES['byte_array']['name'];
-                move_uploaded_file($_FILES['byte_array']['tmp_name'], $pathFile);
-
-                $zip = new \ZipArchive();
-                $zip->open($pathFile);
-                //if($zip->open($pathFile))
-                $zip->extractTo($path);
-                $zip->close();
-                if(unlink($pathFile))
-                    echo 'DELETED';
-            }
-
-            return $newBundle->attributes;
-
-            //file_put_contents("D://file.txt", print_r($_FILES, true));
-
-            //echo $_FILES['byte_array']['type'];
-
-            //$fp = fopen($path."/"."any.zip", "a");
-            //$contents = fread($binData, $_FILES['byte_array']['size']);
-            //exec('unzip any.zip');
-            //$test = fwrite($fp, $contents);
-            //fclose($fp);
-        }
+        return $newBundle->attributes;
     }
 
     public function actionGetnumber()
     {
-        return 222;
+        $data = Yii::$app->request->get();
+        $serverBundle = Bundle::findOne([
+            'project_id' => $data['project_id'],
+            'name_format'=> 'location_'.$data['name_format'],
+            'bundle_size'=> $data['bundle_size']
+        ]);
+        if($serverBundle != null)
+            return $serverBundle->findAndSend($data);
+        else
+            return "There is no such a bundle!";
     }
 }
