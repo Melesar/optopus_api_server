@@ -36,10 +36,10 @@ class BundleController extends Controller
         $newBundle = new Bundle();
         $data = Yii::$app->request->getBodyParams();
         $path = $data['bundle_size']."@".$data['name_format'];
-        $newBundle->unpackAndSave($_FILES['byte_array'], $data);
+        $newBundle->unpackAndSave($_FILES['archive'], $data);
         $newBundle->setAttributes($data,false);
         $newBundle->setAttribute('path',$path);
-        $newBundle->save();
+        //$newBundle->save();
 
         if(!$newBundle->save() || $newBundle == null)
             throw new BadRequestHttpException();

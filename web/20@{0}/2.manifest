@@ -1,0 +1,35 @@
+ManifestFileVersion: 0
+CRC: 1367630330
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 3bf9d673270b00c4f99c08df12c34c34
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 1033bf7ddfd4c6d43e7a6382c0a0a61a
+HashAppended: 0
+ClassTypes:
+- Class: 49
+  Script: {instanceID: 0}
+Assets:
+- Assets/Temp/Level_38.json
+- Assets/Temp/Level_26.json
+- Assets/Temp/Level_34.json
+- Assets/Temp/Level_27.json
+- Assets/Temp/Level_31.json
+- Assets/Temp/Level_36.json
+- Assets/Temp/Level_23.json
+- Assets/Temp/Level_22.json
+- Assets/Temp/Level_32.json
+- Assets/Temp/Level_35.json
+- Assets/Temp/Level_28.json
+- Assets/Temp/Level_24.json
+- Assets/Temp/Level_33.json
+- Assets/Temp/Level_29.json
+- Assets/Temp/Level_30.json
+- Assets/Temp/Level_39.json
+- Assets/Temp/Level_21.json
+- Assets/Temp/Level_25.json
+- Assets/Temp/Level_37.json
+- Assets/Temp/Level_20.json
+Dependencies: []
