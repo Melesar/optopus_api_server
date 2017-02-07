@@ -68,10 +68,22 @@ class Bundle extends ActiveRecord
             $zip->open($path . '.zip', \ZipArchive::CREATE);
             $zip->addEmptyDir($path);
 
-            $name_format = preg_replace('/\{.*/', '', $requestData['name_format']);
+            $file_count = -1; //Even empty directory has one *.* file
 
-            for($i = 1; $i <= $requestData['bundle_size']; $i++)
-                $zip->addFile($path.'/'.$name_format.$i.self::FILE_EXTENSION);
+            $dir = opendir($path);
+            while (false !== ($file = readdir($dir)))
+                if (strpos($file, ".", 1))
+                    $file_count++;
+
+            $file_count_2 = count(scandir($path))-2; //Using this method, empty directory has two hidden files
+
+            $count = $file_count_2 - $file_count;
+
+            for($i = 1; $i <= $count; $i++)
+            {
+                $pathFile = preg_replace('/\{0\}/',$i,$requestData['name_format']);
+                $zip->addFile($path . '/' . $pathFile . self::FILE_EXTENSION);
+            }
 
             $zip->close();
 
