@@ -8,7 +8,6 @@
 
 namespace app\models;
 
-use Symfony\Component\Finder\Expression\Regex;
 use yii\db\ActiveRecord;
 use yii;
 use yii\web\NotFoundHttpException;

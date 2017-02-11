@@ -25,6 +25,7 @@ class BundleController extends Controller
             'name_format'=> $data['name_format'],
             'bundle_size'=> $data['bundle_size']
         ]);
+
         if($serverBundle != null)
             return $serverBundle->packAndSend($data);
         else
@@ -39,7 +40,6 @@ class BundleController extends Controller
         $newBundle->unpackAndSave($_FILES['archive'], $data);
         $newBundle->setAttributes($data,false);
         $newBundle->setAttribute('path',$path);
-        //$newBundle->save();
 
         if(!$newBundle->save() || $newBundle == null)
             throw new BadRequestHttpException();

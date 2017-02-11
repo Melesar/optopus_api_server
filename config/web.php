@@ -61,7 +61,9 @@ $config = [
                 //чтобы проверить id вводим любое число после users/ или levels/
                 'GET bundle' => 'bundle/get',
                 'POST bundle' => 'bundle/post',
-                'GET bundle/number' => 'bundle/getnumber'
+                'GET bundle/number' => 'bundle/getnumber',
+                /******************/
+                'POST fb' => 'social/posttoken'
 
             ],
         ],

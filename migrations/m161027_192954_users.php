@@ -88,8 +88,6 @@ class m161027_192954_users extends Migration
         $this->dropTable('users');
         $this->dropTable('levels');
 
-        $this->dropTable('bundle');
-
         return true;
     }
 
