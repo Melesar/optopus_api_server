@@ -8,26 +8,47 @@
 
 namespace app\controllers;
 
+use app\models\Application;
 use Yii;
 use yii\rest\Controller;
-use app\models\social;
+use app\models\Social;
+use app\models\AppUser;
 use Facebook;
 
 class SocialController extends Controller
 {
     public function actionPosttoken()
     {
+        $accessToken = Yii::$app->request->getBodyParam("FAC");
 
-//        $fb = new Facebook\Facebook([
-//           'app_id'                 => '1360400847382417',
-//           'app_secret'             => '4dec3438df76223efe0e5557539c15e1',
-//           'default_graph_version'  => 'v2.8',
-//        ]);
-        $data = Yii::$app->request->getBodyParams();
-        return $data["FAC"];
+        $app_id = file_get_contents('https://graph.facebook.com/app/?access_token='.$accessToken, NULL, NULL, 134, 16);
+        $app_obj = Application::findOne(['APP_ID' => $app_id]);
 
+        $fb = new Facebook\Facebook([
+            'app_id'                 => $app_obj['APP_ID'],
+            'app_secret'             => $app_obj['APP_SECRET'],
+            'default_graph_version'  => 'v2.8',
+            'default_access_token'   => $app_obj['APP_SECRET'],
+        ]);
 
+        $appsecret_proof = hash_hmac('sha256', $accessToken, $app_obj['APP_SECRET']);
 
+        $res = $fb->get('me?fields=id,first_name,last_name,gender,age_range',$accessToken);
+        if($res != null) {
+            $user = $res->getGraphUser();
+            //$user->getName();
+            return $user->getFieldNames();
+        }
+        else
+            return 'null';
+
+//
+//        $newSAC = rand(0, 1); // 20 numbers => 100000000000000000000
+//        while(AppUser::findOne(['SAC' => $newSAC]) != null)
+//            $newSAC = rand(0, 2);
+//
+//        return $newSAC;
+        
 
     }
 

@@ -19,7 +19,7 @@ class m170211_153148_app extends Migration
     public function up()
     {
         $this->createTable('PRODUCT', [
-            'ID' => $this->integer(),
+            'ID' => $this->bigInteger(),
             'NAME' => $this->string(),
             'DESCRIPTION' => $this->string(),
             'NAME_URL' => $this->string(),
@@ -31,7 +31,7 @@ class m170211_153148_app extends Migration
 //        $this->addPrimaryKey($this->productPk,'PRODUCT','ID');
 
         $this->createTable('BOOSTER', [
-            'ID' => $this->integer(),
+            'ID' => $this->bigInteger(),
             'ALIAS' => $this->string(),
             'NAME' => $this->string(),
             'DESCRIPTION' => $this->string(),
@@ -41,7 +41,7 @@ class m170211_153148_app extends Migration
 //        $this->addPrimaryKey($this->boosterPk,'BOOSTER','ID');
 
         $this->createTable('APPLICATION', [
-            'APP_ID' => $this->integer(),
+            'APP_ID' => $this->bigInteger(),
             'APP_SECRET' => $this->string(),
             'APP_NAME' => $this->string(),
             'PRIMARY KEY(APP_ID)'
@@ -51,7 +51,7 @@ class m170211_153148_app extends Migration
         /* USER_BOOSTER */
         $this->createTable('USER_BOOSTER', [
             'USER_ID' => $this->integer(),
-            'BOOSTER_ID' => $this->integer(),
+            'BOOSTER_ID' => $this->bigInteger(),
             'AMOUNT' => $this->integer(),
             'PRIMARY KEY(USER_ID, BOOSTER_ID)'
         ]);
@@ -72,8 +72,8 @@ class m170211_153148_app extends Migration
         );
         /* APP_PRODUCT */
         $this->createTable('APP_PRODUCT', [
-            'APP_ID' => $this->integer(),
-            'PRODUCT_ID' => $this->integer(),
+            'APP_ID' => $this->bigInteger(),
+            'PRODUCT_ID' => $this->bigInteger(),
             'PRIMARY KEY(APP_ID, PRODUCT_ID)'
         ]);
 
@@ -94,8 +94,8 @@ class m170211_153148_app extends Migration
         );
         /* APP_BOOSTER */
         $this->createTable('APP_BOOSTER', [
-            'APP_ID' => $this->integer(),
-            'BOOSTER_ID' => $this->integer(),
+            'APP_ID' => $this->bigInteger(),
+            'BOOSTER_ID' => $this->bigInteger(),
             'PRIMARY KEY(APP_ID, BOOSTER_ID)'
         ]);
 
@@ -116,8 +116,8 @@ class m170211_153148_app extends Migration
         );
         /* APP_USER */
         $this->createTable('APP_USER', [
-            'APP_ID' => $this->integer(),
-            'USER_ID' => $this->integer(),
+            'APP_ID' => $this->bigInteger(),
+            'USER_ID' => $this->bigInteger(),
             'SAC' => $this->string(),
             'MONEY' => $this->float(),
             'LIVES' => $this->integer(),
