@@ -15,10 +15,10 @@ class m161027_192954_users extends Migration
     public function up()
     {
        $this->createTable('users', [
-            'id' => Schema::TYPE_INTEGER. " PRIMARY KEY",
+            'id' => Schema::TYPE_BIGINT. " PRIMARY KEY",
             'name' => Schema::TYPE_STRING . " NOT NULL",
             'last_name' => Schema::TYPE_STRING. " NOT NULL",
-            'avatar_url' => Schema::TYPE_INTEGER,
+            'avatar_url' => Schema::TYPE_STRING,
             'first_authorized' => Schema::TYPE_DATE,
             'last_online' => Schema::TYPE_DATE,
         ]);
@@ -29,7 +29,7 @@ class m161027_192954_users extends Migration
         ]);
 
         $this->createTable('users_on_levels', [
-            'user_id' => $this->integer(),
+            'user_id' => $this->bigInteger(),
             'level_id' => $this->integer(),
             'max_score' => $this->integer(),
             'is_completed' => $this->boolean(),
@@ -54,8 +54,8 @@ class m161027_192954_users extends Migration
         );
 
         $this->createTable('friendship', [
-            'user_id' => $this->integer(),
-            'friend_id' => $this->integer(),
+            'user_id' => $this->bigInteger(),
+            'friend_id' => $this->bigInteger(),
         ]);
 
         $this->addPrimaryKey($this->friendshipPk, 'friendship', ['user_id', 'friend_id']);

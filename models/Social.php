@@ -13,7 +13,7 @@ use yii\db\ActiveRecord;
 
 class Social extends ActiveRecord
 {
-    public function none()
+    public function dataRefresh()
     {
 
     }

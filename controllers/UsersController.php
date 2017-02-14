@@ -40,7 +40,7 @@ class UsersController extends Controller
         }
         $data = Yii::$app->request->getBodyParams();
         $users = new Users();
-        $users->id=$id;
+        $users->id = $id;
         $users->setAttributes($data,false);
         $users->save();
         return $users->attributes;

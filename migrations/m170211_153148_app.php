@@ -50,7 +50,7 @@ class m170211_153148_app extends Migration
 
         /* USER_BOOSTER */
         $this->createTable('USER_BOOSTER', [
-            'USER_ID' => $this->integer(),
+            'USER_ID' => $this->bigInteger(),
             'BOOSTER_ID' => $this->bigInteger(),
             'AMOUNT' => $this->integer(),
             'PRIMARY KEY(USER_ID, BOOSTER_ID)'
