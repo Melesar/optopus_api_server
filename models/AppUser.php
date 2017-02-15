@@ -12,11 +12,10 @@ use yii\db\ActiveRecord;
 
 class AppUser extends ActiveRecord
 {
-//    public static function tableName()
-//    {
-//        return "APP_USER"; //возвращаем название таблицы для дальнейшей работы модели
-//    }
 
+    /**
+     * Please, search for some way to generate a random string, not only a number
+     */
     public function setSAC()
     {
         $newSAC = rand(0, 10000000000000000);

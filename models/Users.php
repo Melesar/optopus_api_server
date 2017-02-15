@@ -146,7 +146,7 @@ class Users extends ActiveRecord
         $this->name = $fbUser->getFirstName();
         $this->last_name = $fbUser->getLastName();
         $this->avatar_url = $fbUser->getPicture();
-        $this->setAttributes($data,true);
+        $this->setAttributes($data,true);  /** What is the purpose of this call? */
         $this->save();
         return $this;
     }

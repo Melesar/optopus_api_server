@@ -15,10 +15,6 @@ use yii\web\NotFoundHttpException;
 
 class Application extends ActiveRecord
 {
-//    public static function tableName()
-//    {
-//        return "APPLICATION"; //возвращаем название таблицы для дальнейшей работы модели
-//    }
 
     public function getUser($accessToken)
     {
