@@ -36,16 +36,8 @@ class Users extends ActiveRecord
         }
     }
 
-    /**
-     * This thing is terrific.
-     * Consider using ActiveRecord::hasMany for merging tables
-     * and sql orderBy for sorting. Please, never use any kind of custom sort
-     * with database entities
-     */
     public function getCurrentLevelId()
     {
-        /*I also didn't come to the way of using hasMany/hasOne
-        I've just avoided like it's shown below*/
         $userOnLevel = UsersOnLevels::findAll(['user_id' => $this->id]);
         $userOnLevel = ArrayHelper::getColumn($userOnLevel, 'level_id');
         $level = Levels::findAll(['id' => $userOnLevel]);
@@ -146,4 +138,16 @@ class Users extends ActiveRecord
         return $result;
     }
 
+
+    public function fbUpdate($fbUser)
+    {
+        $data = [];
+        $this->id = $fbUser->getId();
+        $this->name = $fbUser->getFirstName();
+        $this->last_name = $fbUser->getLastName();
+        $this->avatar_url = $fbUser->getPicture();
+        $this->setAttributes($data,true);
+        $this->save();
+        return $this;
+    }
 }

@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170211_153148_app extends Migration
+class m170215_153913_apps extends Migration
 {
 //    public $productPk = 'product_pk';
 //    public $boosterPk = 'booster_pk';
