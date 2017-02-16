@@ -30,14 +30,16 @@ class SocialController extends Controller
          * The following piece of code I would also distinguish as a method.
          * $appObj = Application::findApplication($accessToken);
          */
-        $app_id = @file_get_contents('https://graph.facebook.com/app/?access_token='.$accessToken, NULL, NULL, 134, 16);
-        if ($app_id === FALSE)
-        {
-            throw new NotFoundHttpException("There is a problem with your access token");
-        }
-
-        $app_obj = Application::findOne(['APP_ID' => $app_id]);
+//        $app_id = @file_get_contents('https://graph.facebook.com/app/?access_token='.$accessToken, NULL, NULL, 134, 16);
+//        if ($app_id === FALSE)
+//        {
+//            throw new NotFoundHttpException("There is a problem with your access token");
+//        }
+//
+//        $app_obj = Application::findOne(['APP_ID' => $app_id]);
         /**  */
+
+        $app_obj = Application::findApp($accessToken);
 
         $fbUser = $app_obj->getUser($accessToken);
         $user_db = Users::findOne(['id' => $fbUser->getId()]);
@@ -54,7 +56,19 @@ class SocialController extends Controller
          * as a helper class only. For example, in fbUpdate you can ensure that
          * the entity with the given id exists and create a new one, if not.
          */
-        $user_db = AppUser::findOne(['user_id' => $fbUser->getId()]);
+
+        /**
+         * Check this out. Creating and adding new record.
+         *      — A.
+         */
+        $user_db = AppUser::findOne(['app_id' => $app_obj['APP_ID'], 'user_id' => $fbUser->getId()]);
+        if($user_db == null)
+        {
+            $user_db = new AppUser;
+            $user_db->APP_ID = $app_obj['APP_ID'];
+            $user_db->USER_ID = $fbUser->getId();
+            $user_db->save();
+        }
         return $user_db->setSAC();
 
     }

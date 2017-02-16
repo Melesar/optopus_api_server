@@ -37,4 +37,15 @@ class Application extends ActiveRecord
             throw new NotFoundHttpException("There is no such a user in Facebook");
 
     }
+
+    public static function findApp($accessToken)
+    {
+        $app_id = @file_get_contents('https://graph.facebook.com/app/?access_token='.$accessToken, NULL, NULL, 134, 16);
+        if ($app_id === FALSE)
+        {
+            throw new NotFoundHttpException("There is a problem with your access token");
+        }
+
+        return $app_obj = Application::findOne(['APP_ID' => $app_id]);
+    }
 }

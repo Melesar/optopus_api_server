@@ -18,9 +18,23 @@ class Users extends ActiveRecord
     {
         parent::setAttributes($values, $safeOnly);
 
-        $currentDate = new \DateTime();
+//        $currentDate = new \DateTime();
+//
+//        /** if this is the newly created user, its first_authorized value will be set to the current date */
+//        $this->first_authorized = $this->isNewRecord ? $currentDate->format(self::DATE_FORMAT) : $this->first_authorized;
+//        $this->last_online = $currentDate->format(self::DATE_FORMAT);
 
-        /** if this is the newly created user, its first_authorized value will be set to the current date */
+        $this->setDate();
+    }
+
+    /**
+     * setData() is taken out from setAttributes to set date for any User without placing an array of values
+     *      — A.
+     */
+
+    public function setDate()
+    {
+        $currentDate = new \DateTime();
         $this->first_authorized = $this->isNewRecord ? $currentDate->format(self::DATE_FORMAT) : $this->first_authorized;
         $this->last_online = $currentDate->format(self::DATE_FORMAT);
     }
@@ -56,7 +70,6 @@ class Users extends ActiveRecord
         {
             $lvl = $f->getCurrentLevelId();
             $level = UsersOnLevels::findOne(['user_id' => $f->id,'level_id' => $lvl]);
-            /*I understand, that above string shouldn't exist at all, but I have no idea how to avoid using it*/
             $result[] = ['user_id' => $f->id,
                 'current_level_id' => $level->level_id,
                 'reached_at' => $level->reached_at];
@@ -74,8 +87,6 @@ class Users extends ActiveRecord
                 $newOne = new UsersOnLevels();
                 $newOne->setAttributes($data,false);
                 $newOne->save();
-                /*I used setAttributes() instead of load(), because second one
-                requires a value in the field $formName, which I didn't get at all*/
             }
             else
             {
@@ -128,8 +139,6 @@ class Users extends ActiveRecord
         $friends_id = ArrayHelper::getColumn($friends,'friend_id');
         $result = [];
         $scores = UsersOnLevels::findAll(['level_id'=>$level->id,'user_id'=>$friends_id]);
-        /*To create result I used foreach -
-        if you know how to extract values with out it, please explain me how*/
         foreach ($scores as $sc)
             $result[] = ['user_id' => $sc['user_id'],
                        'max_score' => $sc['max_score']];
@@ -141,12 +150,22 @@ class Users extends ActiveRecord
 
     public function fbUpdate($fbUser)
     {
-        $data = [];
+        //$data = [];
+
         $this->id = $fbUser->getId();
         $this->name = $fbUser->getFirstName();
         $this->last_name = $fbUser->getLastName();
         $this->avatar_url = $fbUser->getPicture();
-        $this->setAttributes($data,true);  /** What is the purpose of this call? */
+
+        //$this->setAttributes($data,true);  /** What is the purpose of this call? */
+
+        /**
+         * The code below is alternative to the code above
+         *      — A.
+         */
+        $this->setDate();
+        /**  */
+
         $this->save();
         return $this;
     }

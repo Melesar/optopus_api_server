@@ -18,11 +18,23 @@ class AppUser extends ActiveRecord
      */
     public function setSAC()
     {
-        $newSAC = rand(0, 10000000000000000);
-            while($this::findOne(['SAC' => $newSAC]) != null)
-                $newSAC = rand(0, 10000000000000000);
+        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTYVWXYZ1234567890';
+        $numChars = strlen($chars);
+        $newSAC = '';
+        for ($i = 0; $i < 18; $i++)
+            $newSAC .= substr($chars, rand(1, $numChars) - 1, 1);
+
+        while($this::findOne(['SAC' => $newSAC]) != null)
+        {
+            $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTYVWXYZ1234567890';
+            $numChars = strlen($chars);
+            $newSAC = '';
+            for ($i = 0; $i < 18; $i++)
+                $newSAC .= substr($chars, rand(1, $numChars) - 1, 1);
+        }
         $this->SAC = $newSAC;
         $this->save();
         return $this;
     }
+
 }
