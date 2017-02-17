@@ -14,24 +14,24 @@ class AppUser extends ActiveRecord
 {
 
     /**
-     * Please, search for some way to generate a random string, not only a number
+     * This method used to contain too much redundant code.
      */
     public function setSAC()
     {
+        /**
+         * This method used to contain too much redundant code.
+         * Refactored it for the sake of optimization
+         */
+
         $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTYVWXYZ1234567890';
         $numChars = strlen($chars);
-        $newSAC = '';
-        for ($i = 0; $i < 18; $i++)
-            $newSAC .= substr($chars, rand(1, $numChars) - 1, 1);
 
-        while($this::findOne(['SAC' => $newSAC]) != null)
-        {
-            $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTYVWXYZ1234567890';
-            $numChars = strlen($chars);
+        do {
             $newSAC = '';
             for ($i = 0; $i < 18; $i++)
                 $newSAC .= substr($chars, rand(1, $numChars) - 1, 1);
-        }
+        }while($this::findOne(['SAC' => $newSAC]) != null);
+
         $this->SAC = $newSAC;
         $this->save();
         return $this;

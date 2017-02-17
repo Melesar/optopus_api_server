@@ -17,19 +17,12 @@ class Users extends ActiveRecord
     public function setAttributes($values, $safeOnly = true)
     {
         parent::setAttributes($values, $safeOnly);
-
-//        $currentDate = new \DateTime();
-//
-//        /** if this is the newly created user, its first_authorized value will be set to the current date */
-//        $this->first_authorized = $this->isNewRecord ? $currentDate->format(self::DATE_FORMAT) : $this->first_authorized;
-//        $this->last_online = $currentDate->format(self::DATE_FORMAT);
-
         $this->setDate();
     }
 
     /**
      * setData() is taken out from setAttributes to set date for any User without placing an array of values
-     *      — A.
+     *      ï¿½ A.
      */
 
     public function setDate()
@@ -150,21 +143,12 @@ class Users extends ActiveRecord
 
     public function fbUpdate($fbUser)
     {
-        //$data = [];
-
         $this->id = $fbUser->getId();
         $this->name = $fbUser->getFirstName();
         $this->last_name = $fbUser->getLastName();
         $this->avatar_url = $fbUser->getPicture();
 
-        //$this->setAttributes($data,true);  /** What is the purpose of this call? */
-
-        /**
-         * The code below is alternative to the code above
-         *      — A.
-         */
         $this->setDate();
-        /**  */
 
         $this->save();
         return $this;

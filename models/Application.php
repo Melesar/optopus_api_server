@@ -25,8 +25,6 @@ class Application extends ActiveRecord
             'default_access_token'   =>     $this->APP_SECRET,
         ]);
 
-//        $appsecret_proof = hash_hmac('sha256', $accessToken, $app_obj['APP_SECRET']); // in case of multi-factor authentication
-
         $res = $fb->get('me?fields=id,first_name,last_name,gender,age_range,picture{url}',$accessToken);
         if($res != null)
         {
@@ -46,6 +44,6 @@ class Application extends ActiveRecord
             throw new NotFoundHttpException("There is a problem with your access token");
         }
 
-        return $app_obj = Application::findOne(['APP_ID' => $app_id]);
+        return Application::findOne(['APP_ID' => $app_id]);
     }
 }
