@@ -16,4 +16,14 @@ class UserBooster extends ActiveRecord
     {
         return "USER_BOOSTER"; //возвращаем название таблицы для дальнейшей работы модели
     }
+
+    public function getUsers()
+    {
+        return $this->hasOne(Users::className(),["id"=>"USER_ID"]);
+    }
+
+    public function getBooster()
+    {
+        return $this->hasOne(Booster::className(),["ID"=>"BOOSTER_ID"]);
+    }
 }

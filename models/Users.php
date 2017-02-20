@@ -21,8 +21,8 @@ class Users extends ActiveRecord
     }
 
     /**
-     * setData() is taken out from setAttributes to set date for any User without placing an array of values
-     *      � A.
+     * setDate() is taken out from setAttributes to set date for any User without placing an array of values
+     *      -A.
      */
 
     public function setDate()
@@ -146,11 +146,32 @@ class Users extends ActiveRecord
         $this->id = $fbUser->getId();
         $this->name = $fbUser->getFirstName();
         $this->last_name = $fbUser->getLastName();
-        $this->avatar_url = $fbUser->getPicture();
+        $ava = $fbUser->getPicture();
+        $pict = str_replace('\\','',$ava['url']);
+        $this->avatar_url = $pict;
 
         $this->setDate();
-
+        //$this->load(['id' => $fbUser->getId(), ... ]);
         $this->save();
         return $this;
+    }
+
+    public function getApp()
+    {
+        return $this->hasMany(Application::className(),["ID" => "APP_ID"]) // "id" of Application to "app_id" of App_User
+        ->viaTable("App_User",["USER_ID"=>"id"]) // "user_id" of App_User to "id" of Users
+        ->all();
+    }
+
+    public function getBooster()
+    {
+        return $this->hasMany(Booster::className(),["ID" => "BOOSTER_ID"]) // "id" of Booster to "booster_id" of Users_Booster
+        ->viaTable("User_Booster",["USER_ID"=>"id"]) // "user_id" of Users_Booster to "id" of Users
+        ->all();
+    }
+
+    public function getUserBooster()
+    {
+        return $this->hasMany(UserBooster::className(),["USER_ID"=>"id"]);
     }
 }

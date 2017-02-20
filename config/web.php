@@ -63,7 +63,8 @@ $config = [
                 'POST bundle' => 'bundle/post',
                 'GET bundle/number' => 'bundle/getnumber',
                 /******************/
-                'POST fb' => 'social/posttoken'
+                'POST fb' => 'social/posttoken',
+                'GET user' => 'social/getuser'
 
             ],
         ],
