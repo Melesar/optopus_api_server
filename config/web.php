@@ -44,27 +44,29 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'GET users/<id:\d+>' => 'users/get', //возвращаем id пользователя
-                'POST users/<id:\d+>' => 'users/post', //возвращаем id пользователя
-                'PUT users/<id:\d+>' => 'users/put', //возвращаем "PUT"
-                'PUT users/friends/<user_id:\d+>' => 'users/putfriends',  //возвращаем "PUT FRIENDS"
+                'GET users/<id:\d+>'                =>  'users/get', //возвращаем id пользователя
+                'POST users/<id:\d+>'               =>  'users/post', //возвращаем id пользователя
+                'PUT users/<id:\d+>'                =>  'users/put', //возвращаем "PUT"
+                'PUT users/friends/<user_id:\d+>'   =>  'users/putfriends',  //возвращаем "PUT FRIENDS"
                 /******************/
-                'GET levels/data/<id:\d+>' => 'levels/getdata', //возвращаем id уровня
-                'POST levels/data/<id:\d+>' => 'levels/postdata', //возвращаем id уровня
-                'PUT levels/data/<id:\d+>' => 'levels/putdata', //возвращаем "PUT DATA"
+                'GET levels/data/<id:\d+>'          =>  'levels/getdata', //возвращаем id уровня
+                'POST levels/data/<id:\d+>'         =>  'levels/postdata', //возвращаем id уровня
+                'PUT levels/data/<id:\d+>'          =>  'levels/putdata', //возвращаем "PUT DATA"
                 /******************/
-                'GET levels/progress' => 'levels/getprogress', //возвращаем "GET PROGRESS"
-                'POST levels/progress' => 'levels/postprogress', //возвращаем "POST PROGRESS"
-                'PUT levels/progress' => 'levels/putprogress', //возвращаем "PUT PROGRESS"
+                'GET levels/progress'               =>  'levels/getprogress', //возвращаем "GET PROGRESS"
+                'POST levels/progress'              =>  'levels/postprogress', //возвращаем "POST PROGRESS"
+                'PUT levels/progress'               =>  'levels/putprogress', //возвращаем "PUT PROGRESS"
                 /******************/
-                'GET levels/score' => 'levels/score', //возвращаем "GET SCORE"
+                'GET levels/score'                  =>  'levels/score', //возвращаем "GET SCORE"
                 //чтобы проверить id вводим любое число после users/ или levels/
-                'GET bundle' => 'bundle/get',
-                'POST bundle' => 'bundle/post',
-                'GET bundle/number' => 'bundle/getnumber',
+                'GET bundle'                        =>  'bundle/get',
+                'POST bundle'                       =>  'bundle/post',
+                'GET bundle/number'                 =>  'bundle/getnumber',
                 /******************/
-                'POST fb' => 'social/posttoken',
-                'GET user' => 'social/getuser'
+                'POST fb'                           =>  'social/posttoken',
+                'GET user'                          =>  'social/getuser',
+                'GET booster'                       =>  'social/getbooster',
+                'GET lives'                         =>  'social/getlives'
 
             ],
         ],

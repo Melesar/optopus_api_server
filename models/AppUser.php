@@ -12,17 +12,10 @@ use yii\db\ActiveRecord;
 
 class AppUser extends ActiveRecord
 {
+    const DATE_FORMAT = "Y-m-d H:i:s";
 
-    /**
-     * This method used to contain too much redundant code.
-     */
     public function setSAC()
     {
-        /**
-         * This method used to contain too much redundant code.
-         * Refactored it for the sake of optimization
-         */
-
         $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTYVWXYZ1234567890';
         $numChars = strlen($chars);
 
@@ -37,4 +30,15 @@ class AppUser extends ActiveRecord
         return $this;
     }
 
+    public function refreshDate()
+    {
+        $currentDate = new \DateTime();
+        $interval = new \DateInterval('PT5M');
+        $this->SERVER_TIMESTAMP = $currentDate->format(self::DATE_FORMAT);
+        if ($this->SERVER_TIMESTAMP >= $this->NEXT_UPDATE && $this->LIVES < 5)
+        {
+            $this->LIVES++;
+            $this->NEXT_UPDATE = $currentDate->add($interval)->format(self::DATE_FORMAT);
+        }
+    }
 }

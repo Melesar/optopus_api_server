@@ -14,11 +14,13 @@ use app\models\Booster;
 use app\models\Social;
 use app\models\UserBooster;
 use app\models\Users;
-use yii\db\Query;
+
 
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\rest\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\HeaderCollection;
 
 use Facebook;
 
@@ -53,9 +55,35 @@ class SocialController extends Controller
 
     public function actionGetuser()
     {
-        $SAC = Yii::$app->request->get('SAC');
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
         $app_user = AppUser::findOne(['SAC' => $SAC]);
 
         return Social::getUserMultitableData($app_user);
+    }
+
+    public function actionGetbooster()
+    {
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        if($app_user)
+        {
+            return Booster::find()->all();
+        }
+        else
+            throw new NotFoundHttpException("Please, make sure, that you have a correct one access token");
+    }
+
+    public function actionGetlives()
+    {
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        if($app_user)
+        {
+            $app_user->refreshDate();
+            $app_user->save();
+            return $app_user->find()->select('LIVES, NEXT_UPDATE, SERVER_TIMESTAMP')->one();
+        }
+        else
+            throw new NotFoundHttpException("Please, make sure, that you have a correct one access token");
     }
 }
