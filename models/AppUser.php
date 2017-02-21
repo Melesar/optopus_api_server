@@ -8,7 +8,9 @@
 
 namespace app\models;
 
+use Yii;
 use yii\db\ActiveRecord;
+use yii\web\BadRequestHttpException;
 
 class AppUser extends ActiveRecord
 {
@@ -40,5 +42,24 @@ class AppUser extends ActiveRecord
             $this->LIVES++;
             $this->NEXT_UPDATE = $currentDate->add($interval)->format(self::DATE_FORMAT);
         }
+    }
+
+    public function uploadSavedGame($uploadedData)
+    {
+        $binData = fopen($_FILES['binary']['tmp_name'],'r');
+        if($binData == null)
+            throw new BadRequestHttpException();
+        $path = Yii::getAlias('@web').'test_save';
+
+        if(!is_dir($path))
+            mkdir($path);
+
+        if(is_uploaded_file($uploadedData['tmp_name']))
+        {
+            $path .= '/'.$uploadedData['name'];
+            move_uploaded_file($uploadedData['tmp_name'], $path);
+        }
+        $this->SAVED_GAME = $path;
+        $this->save();
     }
 }

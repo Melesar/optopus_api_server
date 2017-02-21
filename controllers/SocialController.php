@@ -108,24 +108,7 @@ class SocialController extends Controller
         $app_user = AppUser::findOne(['SAC' => $SAC]);
         if($app_user)
         {
-            $binData = fopen($_FILES['binary']['tmp_name'],'r');
-            if($binData == null)
-                throw new BadRequestHttpException();
-            $path = Yii::getAlias('@web').'test_save';
-
-            if(!is_dir($path))
-                mkdir($path);
-
-            if(is_uploaded_file($_FILES['binary']['tmp_name']))
-            {
-                $path .= '/'.$_FILES['binary']['name'];
-                move_uploaded_file($_FILES['binary']['tmp_name'], $path);
-
-
-            }
-
-            return $path;
-
+            $app_user->uploadSavedGame($_FILES['binary']);
         }
         else
             throw new NotFoundHttpException("Please, make sure, that you have a correct one access token");
