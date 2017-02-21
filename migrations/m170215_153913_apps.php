@@ -123,7 +123,7 @@ class m170215_153913_apps extends Migration
             'LIVES' => $this->integer(),
             'NEXT_UPDATE' => $this->dateTime(),
             'SERVER_TIMESTAMP' => $this->dateTime(),
-            'SAVED_GAME' => $this->binary(),
+            'SAVED_GAME' => $this->string(),
             'PRIMARY KEY(APP_ID, USER_ID)'
         ]);
 

@@ -10,6 +10,9 @@ namespace app\models;
 
 use yii;
 use yii\db\ActiveRecord;
+use PDO;
+use PDOStatement;
+use app\models\AppUser;
 
 class Social extends ActiveRecord
 {
@@ -35,4 +38,6 @@ class Social extends ActiveRecord
 
         return $q3;
     }
+
+
 }

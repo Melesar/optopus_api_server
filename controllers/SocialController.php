@@ -11,22 +11,25 @@ namespace app\controllers;
 use app\models\Application;
 use app\models\AppUser;
 use app\models\Booster;
+use app\models\Product;
 use app\models\Social;
 use app\models\UserBooster;
 use app\models\Users;
 
 
 use Yii;
-use yii\helpers\ArrayHelper;
 use yii\rest\Controller;
 use yii\web\NotFoundHttpException;
-use yii\web\HeaderCollection;
+use yii\web\BadRequestHttpException;
+
 
 use Facebook;
 
 
 class SocialController extends Controller
 {
+    const DB_NAME = 'octopus';
+    const DB_HOST = 'localhost';
     public function actionPosttoken()
     {
         $accessToken = Yii::$app->request->getBodyParam("FAC");
@@ -82,6 +85,47 @@ class SocialController extends Controller
             $app_user->refreshDate();
             $app_user->save();
             return $app_user->find()->select('LIVES, NEXT_UPDATE, SERVER_TIMESTAMP')->one();
+        }
+        else
+            throw new NotFoundHttpException("Please, make sure, that you have a correct one access token");
+    }
+
+    public function actionGetproduct()
+    {
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        if($app_user)
+        {
+            return Product::find()->all();
+        }
+        else
+            throw new NotFoundHttpException("Please, make sure, that you have a correct one access token");
+    }
+
+    public function actionPostprogress()
+    {
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        if($app_user)
+        {
+            $binData = fopen($_FILES['binary']['tmp_name'],'r');
+            if($binData == null)
+                throw new BadRequestHttpException();
+            $path = Yii::getAlias('@web').'test_save';
+
+            if(!is_dir($path))
+                mkdir($path);
+
+            if(is_uploaded_file($_FILES['binary']['tmp_name']))
+            {
+                $path .= '/'.$_FILES['binary']['name'];
+                move_uploaded_file($_FILES['binary']['tmp_name'], $path);
+
+
+            }
+
+            return $path;
+
         }
         else
             throw new NotFoundHttpException("Please, make sure, that you have a correct one access token");
