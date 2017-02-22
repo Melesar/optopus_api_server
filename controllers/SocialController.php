@@ -21,7 +21,8 @@ use Yii;
 use yii\rest\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;
-
+use yii\web\UnauthorizedHttpException;
+use yii\web\UploadedFile;
 
 use Facebook;
 
@@ -30,7 +31,7 @@ class SocialController extends Controller
 {
     const DB_NAME = 'octopus';
     const DB_HOST = 'localhost';
-    public function actionPosttoken()
+    public function actionPostfb()
     {
         $accessToken = Yii::$app->request->getBodyParam("FAC");
 
@@ -73,10 +74,10 @@ class SocialController extends Controller
             return Booster::find()->all();
         }
         else
-            throw new NotFoundHttpException("Please, make sure, that you have a correct one access token");
+            throw new UnauthorizedHttpException("Please, make sure, that you have a correct one access token");
     }
 
-    public function actionGetlives()
+    public function actionGetlive()
     {
         $SAC = Yii::$app->request->getHeaders()->get('SAC');
         $app_user = AppUser::findOne(['SAC' => $SAC]);
@@ -87,7 +88,7 @@ class SocialController extends Controller
             return $app_user->find()->select('LIVES, NEXT_UPDATE, SERVER_TIMESTAMP')->one();
         }
         else
-            throw new NotFoundHttpException("Please, make sure, that you have a correct one access token");
+            throw new UnauthorizedHttpException("Please, make sure, that you have a correct one access token");
     }
 
     public function actionGetproduct()
@@ -99,7 +100,7 @@ class SocialController extends Controller
             return Product::find()->all();
         }
         else
-            throw new NotFoundHttpException("Please, make sure, that you have a correct one access token");
+            throw new UnauthorizedHttpException("Please, make sure, that you have a correct one access token");
     }
 
     public function actionPostprogress()
@@ -111,6 +112,34 @@ class SocialController extends Controller
             $app_user->uploadSavedGame($_FILES['binary']);
         }
         else
-            throw new NotFoundHttpException("Please, make sure, that you have a correct one access token");
+            throw new UnauthorizedHttpException("Please, make sure, that you have a correct one access token");
+    }
+
+    public function actionPostbooster()
+    {
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        if($app_user)
+        {
+            $booster_id = Yii::$app->request->getBodyParam('BOOSTER_ID');
+            $ub = UserBooster::findOne(['USER_ID' => $app_user['USER_ID'], 'BOOSTER_ID' => $booster_id]);
+            $ub->useBooster();
+        }
+        else
+            throw new UnauthorizedHttpException("Please, make sure, that you have a correct one access token");
+    }
+
+    public function actionPostboosterbuy()
+    {
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        if($app_user)
+        {
+            $booster_id = Yii::$app->request->getBodyParam('BOOSTER_ID');
+            return $app_user->buyBooster($booster_id);
+
+        }
+        else
+            throw new UnauthorizedHttpException("Please, make sure, that you have a correct one access token");
     }
 }

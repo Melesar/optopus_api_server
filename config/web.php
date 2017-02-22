@@ -63,10 +63,14 @@ $config = [
                 'POST bundle'                       =>  'bundle/post',
                 'GET bundle/number'                 =>  'bundle/getnumber',
                 /******************/
-                'POST fb'                           =>  'social/posttoken',
+                'POST fb'                           =>  'social/postfb',
+                'POST live'                         =>  'social/postlive',
+                'POST booster'                      =>  'social/postbooster',
                 'POST progress'                     =>  'social/postprogress',
+                'POST booster/buy'                  =>  'social/postboosterbuy',
+
                 'GET user'                          =>  'social/getuser',
-                'GET lives'                         =>  'social/getlives',
+                'GET live'                          =>  'social/getlive',
                 'GET booster'                       =>  'social/getbooster',
                 'GET product'                       =>  'social/getproduct',
                 'GET progress'                      =>  'social/getprogress'

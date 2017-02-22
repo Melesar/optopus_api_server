@@ -9,12 +9,25 @@
 namespace app\models;
 
 use yii\db\ActiveRecord;
+use yii\web\BadRequestHttpException;
 
 class UserBooster extends ActiveRecord
 {
     public static function tableName()
     {
         return "USER_BOOSTER"; //возвращаем название таблицы для дальнейшей работы модели
+    }
+
+    public function useBooster()
+    {
+        $b = Booster::findOne($this->BOOSTER_ID);
+        if($b && $this->AMOUNT > 0)
+        {
+            $this->AMOUNT--;
+            $this->save();
+        }
+        else
+            throw new BadRequestHttpException("The amount of this booster type on your account is 0");
     }
 
     public function getUsers()

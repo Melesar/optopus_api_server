@@ -10,7 +10,10 @@ namespace app\models;
 
 use Yii;
 use yii\db\ActiveRecord;
+use yii\web\UploadedFile;
+use yii\base\Model;
 use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
 
 class AppUser extends ActiveRecord
 {
@@ -35,17 +38,19 @@ class AppUser extends ActiveRecord
     public function refreshDate()
     {
         $currentDate = new \DateTime();
-        $interval = new \DateInterval('PT5M');
         $this->SERVER_TIMESTAMP = $currentDate->format(self::DATE_FORMAT);
-        if ($this->SERVER_TIMESTAMP >= $this->NEXT_UPDATE && $this->LIVES < 5)
-        {
-            $this->LIVES++;
-            $this->NEXT_UPDATE = $currentDate->add($interval)->format(self::DATE_FORMAT);
-        }
+
+//        $interval = new \DateInterval('PT5M');
+//        if ($this->SERVER_TIMESTAMP >= $this->NEXT_UPDATE && $this->LIVES < 5)
+//        {
+//            $this->LIVES++;
+//            $this->NEXT_UPDATE = $currentDate->add($interval)->format(self::DATE_FORMAT);
+//        }
     }
 
     public function uploadSavedGame($uploadedData)
     {
+
         $binData = fopen($_FILES['binary']['tmp_name'],'r');
         if($binData == null)
             throw new BadRequestHttpException();
@@ -61,5 +66,26 @@ class AppUser extends ActiveRecord
         }
         $this->SAVED_GAME = $path;
         $this->save();
+    }
+
+    public function buyBooster($booster_id)
+    {
+        $b = Booster::findOne(['ID' => $booster_id]);
+        if($b)
+        {
+            if($this->MONEY >= $b["COST"])
+            {
+                $this->MONEY -= $b["COST"];
+                $ub = UserBooster::findOne(['USER_ID' => $this->USER_ID,'BOOSTER_ID' => $booster_id]);
+                $ub['AMOUNT'] += 1;
+                $ub -> save();
+                return $ub;
+            }
+            else
+                throw new BadRequestHttpException("You have not enough money");
+        }
+        else
+            throw new NotFoundHttpException("There is no such a booster");
+
     }
 }
