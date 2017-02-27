@@ -66,6 +66,7 @@ $config = [
                 'POST fb'                           =>  'social/postfb',
                 'POST live'                         =>  'social/postlive',
                 'POST booster'                      =>  'social/postbooster',
+                'POST product'                      =>  'social/postproduct',
                 'POST progress'                     =>  'social/postprogress',
                 'POST booster/buy'                  =>  'social/postboosterbuy',
 

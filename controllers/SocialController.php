@@ -29,8 +29,6 @@ use Facebook;
 
 class SocialController extends Controller
 {
-    const DB_NAME = 'octopus';
-    const DB_HOST = 'localhost';
     public function actionPostfb()
     {
         $accessToken = Yii::$app->request->getBodyParam("FAC");
@@ -84,7 +82,7 @@ class SocialController extends Controller
         if($app_user)
         {
             $app_user->refreshDate();
-            $app_user->save();
+            $app_user->liveIncrement();
             return $app_user->find()->select('LIVES, NEXT_UPDATE, SERVER_TIMESTAMP')->one();
         }
         else
@@ -141,5 +139,25 @@ class SocialController extends Controller
         }
         else
             throw new UnauthorizedHttpException("Please, make sure, that you have a correct one access token");
+    }
+
+    public function actionPostlive()
+    {
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        if($app_user)
+        {
+            $app_user->liveIncrement();
+            $app_user->setDate();
+            return $app_user->find()->select('LIVES, NEXT_UPDATE, SERVER_TIMESTAMP')->one();
+
+        }
+        else
+            throw new UnauthorizedHttpException("Please, make sure, that you have a correct one access token");
+    }
+
+    public function actionPostproduct()
+    {
+
     }
 }

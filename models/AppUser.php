@@ -8,6 +8,8 @@
 
 namespace app\models;
 
+use app\commands\HelloController;
+use app\controllers\SocialController;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\web\UploadedFile;
@@ -18,6 +20,7 @@ use yii\web\NotFoundHttpException;
 class AppUser extends ActiveRecord
 {
     const DATE_FORMAT = "Y-m-d H:i:s";
+    const LIVE_LIMIT = 5;
 
     public function setSAC()
     {
@@ -39,13 +42,42 @@ class AppUser extends ActiveRecord
     {
         $currentDate = new \DateTime();
         $this->SERVER_TIMESTAMP = $currentDate->format(self::DATE_FORMAT);
+        $this->save();
+    }
 
-//        $interval = new \DateInterval('PT5M');
-//        if ($this->SERVER_TIMESTAMP >= $this->NEXT_UPDATE && $this->LIVES < 5)
-//        {
-//            $this->LIVES++;
-//            $this->NEXT_UPDATE = $currentDate->add($interval)->format(self::DATE_FORMAT);
-//        }
+    public function setDate()
+    {
+        $this->refreshDate();
+        $currentDate = new \DateTime();
+        $interval = new \DateInterval('PT15M');
+        if ($this->LIVES > 0)
+        {
+            $this->LIVES--;
+            $this->NEXT_UPDATE = $currentDate->add($interval)->format(self::DATE_FORMAT);
+            $this->save();
+        }
+        elseif($this->LIVES == 0)
+        {
+            $timeToWait = date("i:s", strtotime($this->NEXT_UPDATE) - strtotime($this->SERVER_TIMESTAMP));
+            throw new BadRequestHttpException("You are out of lives! So wait " . $timeToWait . " minutes for recovery.");
+        }
+    }
+
+    public function liveIncrement()
+    {
+        $currentDate = new \DateTime();
+        $interval = new \DateInterval('PT15M');
+        $this->refreshDate();
+        if ($this->LIVES < self::LIVE_LIMIT)
+        {
+            if ($this->SERVER_TIMESTAMP >= $this->NEXT_UPDATE)
+            {
+                $this->LIVES++;
+                if($this->LIVES < self::LIVE_LIMIT)
+                    $this->NEXT_UPDATE = $currentDate->add($interval)->format(self::DATE_FORMAT);
+                $this->save();
+            }
+        }
     }
 
     public function uploadSavedGame($uploadedData)

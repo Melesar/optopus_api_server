@@ -7,6 +7,7 @@
 
 namespace app\commands;
 
+use app\models\AppUser;
 use yii\console\Controller;
 
 /**
@@ -26,5 +27,33 @@ class HelloController extends Controller
     public function actionIndex($message = 'hello world')
     {
         echo $message . "\n";
+    }
+
+    /**
+     * This command is testing now...
+     */
+
+    const DATE_FORMAT = "Y-m-d H:i:s";
+
+    public function actionUpdateLives()
+    {
+        $currentDate = new \DateTime();
+        $interval = new \DateInterval('PT5M');
+        AppUser::updateAll(['SERVER_TIMESTAMP' => $currentDate->format(self::DATE_FORMAT)]);
+        //AppUser::updateAll(['LIVES' => 0]);
+        $ob = AppUser::find()->where('LIVES < :LIVES',[':LIVES' => 5])->all();
+        if($ob)
+        {
+            foreach($ob as $obj)
+            {
+                if ($obj->SERVER_TIMESTAMP >= $obj->NEXT_UPDATE)
+                {
+                    $obj->updateCounters(['LIVES' => 1]);
+                    if($obj->LIVES < 5)
+                        $obj->NEXT_UPDATE = $currentDate->add($interval)->format(self::DATE_FORMAT);
+                    $obj->save();
+                }
+            }
+        }
     }
 }
