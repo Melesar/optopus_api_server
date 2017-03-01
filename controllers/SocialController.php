@@ -25,6 +25,8 @@ use yii\web\UnauthorizedHttpException;
 use yii\web\UploadedFile;
 
 use Facebook;
+use Facebook\Exceptions\FacebookResponseException;
+use Facebook\Exceptions\FacebookSDKException;
 
 
 class SocialController extends Controller
@@ -158,6 +160,34 @@ class SocialController extends Controller
 
     public function actionPostproduct()
     {
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        if($app_user)
+        {
+            $app = Application::findOne($app_user['APP_ID']);
+            $signed_request = Yii::$app->request->getBodyParam('signed_request');
+            //return $app;
+            $fbApp = new Facebook\FacebookApp($app['APP_ID'], $app['APP_SECRET']);
+            $accessToken = $fbApp->getAccessToken();
+            $signedRequest = new Facebook\SignedRequest($fbApp, $signed_request);
+            $encodeSR = $signedRequest->getPayload();
+            if($encodeSR['status'] == 'completed')
+            {
+                $info = @file_get_contents('https://graph.facebook.com/'.$encodeSR['payment_id'].'?access_token='.$accessToken.'&fields=id,application,items',NULL,NULL,134,16);
+                $prod = Product::findOne(['PRODUCT_URL' => $info['items']['product']]);
+                if($prod && $info['id'] == $app_user['USER_ID'])
+                {
+                    $app_user['MONEY'] += $prod['MONEY'];
+                    $app_user->save();
+                }
+                else
+                    throw new BadRequestHttpException('Please, make sure, that you have choose proper product and you are using your account');
 
+            }
+            else
+                throw new FacebookSDKException('Your transaction status is '.$encodeSR['status']);
+        }
+        else
+            throw new UnauthorizedHttpException("Please, make sure, that you have a correct one access token");
     }
 }

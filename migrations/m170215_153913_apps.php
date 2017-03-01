@@ -22,10 +22,11 @@ class m170215_153913_apps extends Migration
             'ID' => $this->bigInteger(),
             'NAME' => $this->string(),
             'DESCRIPTION' => $this->string(),
-            'NAME_URL' => $this->string(),
+            'IMAGE_URL' => $this->string(),
             'PRICE' => $this->float(),
             'CURRENCY' => $this->string(),
             'PRODUCT_URL' => $this->string(),
+            'MONEY' => $this->integer(),
             'PRIMARY KEY(ID)'
         ]);
 //        $this->addPrimaryKey($this->productPk,'PRODUCT','ID');
