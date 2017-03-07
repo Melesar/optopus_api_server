@@ -31,9 +31,9 @@ use Facebook\Exceptions\FacebookSDKException;
 
 class SocialController extends Controller
 {
-    public function actionPostfb()
+    public function actionPostauth()
     {
-        $accessToken = Yii::$app->request->getBodyParam("FAC");
+        $accessToken = Yii::$app->request->getBodyParam("fac");
 
         $app_obj = Application::findApp($accessToken);
 
@@ -46,12 +46,12 @@ class SocialController extends Controller
         }
         $user_db->fbUpdate($fbUser);
 
-        $user_db = AppUser::findOne(['app_id' => $app_obj['APP_ID'], 'user_id' => $fbUser->getId()]);
+        $user_db = AppUser::findOne(['app_id' => $app_obj['app_id'], 'user_id' => $fbUser->getId()]);
         if($user_db == null)
         {
             $user_db = new AppUser;
-            $user_db->APP_ID = $app_obj['APP_ID'];
-            $user_db->USER_ID = $fbUser->getId();
+            $user_db->app_id = $app_obj['app_id'];
+            $user_db->user_id = $fbUser->getId();
             $user_db->save();
         }
         return $user_db->setSAC();
@@ -59,16 +59,16 @@ class SocialController extends Controller
 
     public function actionGetuser()
     {
-        $SAC = Yii::$app->request->getHeaders()->get('SAC');
-        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        $sac = Yii::$app->request->getHeaders()->get('sac');
+        $app_user = AppUser::findOne(['sac' => $sac]);
 
         return Social::getUserMultitableData($app_user);
     }
 
-    public function actionGetbooster()
+    public function actionGetboosters()
     {
-        $SAC = Yii::$app->request->getHeaders()->get('SAC');
-        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        $sac = Yii::$app->request->getHeaders()->get('sac');
+        $app_user = AppUser::findOne(['sac' => $sac]);
         if($app_user)
         {
             return Booster::find()->all();
@@ -77,24 +77,24 @@ class SocialController extends Controller
             throw new UnauthorizedHttpException("Please, make sure, that you have a correct one access token");
     }
 
-    public function actionGetlive()
+    public function actionGetlives()
     {
-        $SAC = Yii::$app->request->getHeaders()->get('SAC');
-        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        $sac = Yii::$app->request->getHeaders()->get('sac');
+        $app_user = AppUser::findOne(['sac' => $sac]);
         if($app_user)
         {
             $app_user->refreshDate();
             $app_user->liveIncrement();
-            return $app_user->find()->select('LIVES, NEXT_UPDATE, SERVER_TIMESTAMP')->one();
+            return $app_user->find()->select('lives, next_update, server_timestamp')->one();
         }
         else
             throw new UnauthorizedHttpException("Please, make sure, that you have a correct one access token");
     }
 
-    public function actionGetproduct()
+    public function actionGetproducts()
     {
-        $SAC = Yii::$app->request->getHeaders()->get('SAC');
-        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        $sac = Yii::$app->request->getHeaders()->get('sac');
+        $app_user = AppUser::findOne(['sac' => $sac]);
         if($app_user)
         {
             return Product::find()->all();
@@ -105,8 +105,8 @@ class SocialController extends Controller
 
     public function actionPostprogress()
     {
-        $SAC = Yii::$app->request->getHeaders()->get('SAC');
-        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        $sac = Yii::$app->request->getHeaders()->get('sac');
+        $app_user = AppUser::findOne(['sac' => $sac]);
         if($app_user)
         {
             $app_user->uploadSavedGame($_FILES['binary']);
@@ -115,74 +115,72 @@ class SocialController extends Controller
             throw new UnauthorizedHttpException("Please, make sure, that you have a correct one access token");
     }
 
-    public function actionPostbooster()
+    public function actionPostboosters()
     {
-        $SAC = Yii::$app->request->getHeaders()->get('SAC');
-        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        $sac = Yii::$app->request->getHeaders()->get('sac');
+        $app_user = AppUser::findOne(['sac' => $sac]);
         if($app_user)
         {
-            $booster_id = Yii::$app->request->getBodyParam('BOOSTER_ID');
-            $ub = UserBooster::findOne(['USER_ID' => $app_user['USER_ID'], 'BOOSTER_ID' => $booster_id]);
+            $booster_id = Yii::$app->request->getBodyParam('booster_id');
+            $ub = UserBooster::findOne(['user_id' => $app_user['user_id'], 'booster_id' => $booster_id]);
             $ub->useBooster();
         }
         else
             throw new UnauthorizedHttpException("Please, make sure, that you have a correct one access token");
     }
 
-    public function actionPostboosterbuy()
+    public function actionPostboostersbuy()
     {
-        $SAC = Yii::$app->request->getHeaders()->get('SAC');
-        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        $sac = Yii::$app->request->getHeaders()->get('sac');
+        $app_user = AppUser::findOne(['sac' => $sac]);
         if($app_user)
         {
-            $booster_id = Yii::$app->request->getBodyParam('BOOSTER_ID');
+            $booster_id = Yii::$app->request->getBodyParam('booster_id');
             return $app_user->buyBooster($booster_id);
-
         }
         else
             throw new UnauthorizedHttpException("Please, make sure, that you have a correct one access token");
     }
 
-    public function actionPostlive()
+    public function actionPostlives()
     {
-        $SAC = Yii::$app->request->getHeaders()->get('SAC');
-        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        $sac = Yii::$app->request->getHeaders()->get('sac');
+        $app_user = AppUser::findOne(['sac' => $sac]);
         if($app_user)
         {
             $app_user->liveIncrement();
             $app_user->setDate();
-            return $app_user->find()->select('LIVES, NEXT_UPDATE, SERVER_TIMESTAMP')->one();
-
+            return $app_user->find()->select('lives, next_update, server_timestamp')->one();
         }
         else
             throw new UnauthorizedHttpException("Please, make sure, that you have a correct one access token");
     }
 
-    public function actionPostproduct()
+    public function actionPostproducts()
     {
-        $SAC = Yii::$app->request->getHeaders()->get('SAC');
-        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        $sac = Yii::$app->request->getHeaders()->get('sac');
+        $app_user = AppUser::findOne(['sac' => $sac]);
         if($app_user)
         {
-            $app = Application::findOne($app_user['APP_ID']);
+            $app = Application::findOne($app_user['app_id']);
             $signed_request = Yii::$app->request->getBodyParam('signed_request');
             //return $app;
-            $fbApp = new Facebook\FacebookApp($app['APP_ID'], $app['APP_SECRET']);
+            $fbApp = new Facebook\FacebookApp($app['app_id'], $app['app_secret']);
             $accessToken = $fbApp->getAccessToken();
             $signedRequest = new Facebook\SignedRequest($fbApp, $signed_request);
             $encodeSR = $signedRequest->getPayload();
             if($encodeSR['status'] == 'completed')
             {
-                $info = @file_get_contents('https://graph.facebook.com/'.$encodeSR['payment_id'].'?access_token='.$accessToken.'&fields=id,application,items',NULL,NULL,134,16);
-                $prod = Product::findOne(['PRODUCT_URL' => $info['items']['product']]);
-                if($prod && $info['id'] == $app_user['USER_ID'])
+                $req = @file_get_contents('https://graph.facebook.com/'.$encodeSR['payment_id'].'?access_token='.$accessToken.'&fields=id,application,items');
+                $info = json_decode($req, true);
+                $prod = Product::findOne(['product_url' => $info['items']['product']]);
+                if($prod && $info['id'] == $app_user['user_id'])
                 {
-                    $app_user['MONEY'] += $prod['MONEY'];
+                    $app_user['money'] += $prod['money'];
                     $app_user->save();
                 }
                 else
                     throw new BadRequestHttpException('Please, make sure, that you have choose proper product and you are using your account');
-
             }
             else
                 throw new FacebookSDKException('Your transaction status is '.$encodeSR['status']);

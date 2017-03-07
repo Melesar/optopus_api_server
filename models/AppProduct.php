@@ -14,6 +14,6 @@ class AppProduct extends ActiveRecord
 {
     public static function tableName()
     {
-        return "APP_PRODUCT"; //возвращаем название таблицы для дальнейшей работы модели
+        return "app_product"; //возвращаем название таблицы для дальнейшей работы модели
     }
 }

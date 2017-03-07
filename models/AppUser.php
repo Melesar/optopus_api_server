@@ -31,7 +31,7 @@ class AppUser extends ActiveRecord
             $newSAC = '';
             for ($i = 0; $i < 18; $i++)
                 $newSAC .= substr($chars, rand(1, $numChars) - 1, 1);
-        }while($this::findOne(['SAC' => $newSAC]) != null);
+        }while($this::findOne(['sac' => $newSAC]) != null);
 
         $this->SAC = $newSAC;
         $this->save();
@@ -41,7 +41,7 @@ class AppUser extends ActiveRecord
     public function refreshDate()
     {
         $currentDate = new \DateTime();
-        $this->SERVER_TIMESTAMP = $currentDate->format(self::DATE_FORMAT);
+        $this->server_timestamp = $currentDate->format(self::DATE_FORMAT);
         $this->save();
     }
 
@@ -50,15 +50,15 @@ class AppUser extends ActiveRecord
         $this->refreshDate();
         $currentDate = new \DateTime();
         $interval = new \DateInterval('PT15M');
-        if ($this->LIVES > 0)
+        if ($this->lives > 0)
         {
-            $this->LIVES--;
-            $this->NEXT_UPDATE = $currentDate->add($interval)->format(self::DATE_FORMAT);
+            $this->lives--;
+            $this->next_update = $currentDate->add($interval)->format(self::DATE_FORMAT);
             $this->save();
         }
-        elseif($this->LIVES == 0)
+        elseif($this->lives == 0)
         {
-            $timeToWait = date("i:s", strtotime($this->NEXT_UPDATE) - strtotime($this->SERVER_TIMESTAMP));
+            $timeToWait = date("i:s", strtotime($this->next_update) - strtotime($this->server_timestamp));
             throw new BadRequestHttpException("You are out of lives! So wait " . $timeToWait . " minutes for recovery.");
         }
     }
@@ -68,13 +68,13 @@ class AppUser extends ActiveRecord
         $currentDate = new \DateTime();
         $interval = new \DateInterval('PT15M');
         $this->refreshDate();
-        if ($this->LIVES < self::LIVE_LIMIT)
+        if ($this->lives < self::LIVE_LIMIT)
         {
-            if ($this->SERVER_TIMESTAMP >= $this->NEXT_UPDATE)
+            if ($this->server_timestamp >= $this->next_update)
             {
-                $this->LIVES++;
-                if($this->LIVES < self::LIVE_LIMIT)
-                    $this->NEXT_UPDATE = $currentDate->add($interval)->format(self::DATE_FORMAT);
+                $this->lives++;
+                if($this->lives < self::LIVE_LIMIT)
+                    $this->next_update = $currentDate->add($interval)->format(self::DATE_FORMAT);
                 $this->save();
             }
         }
@@ -96,20 +96,20 @@ class AppUser extends ActiveRecord
             $path .= '/'.$uploadedData['name'];
             move_uploaded_file($uploadedData['tmp_name'], $path);
         }
-        $this->SAVED_GAME = $path;
+        $this->saved_game = $path;
         $this->save();
     }
 
     public function buyBooster($booster_id)
     {
-        $b = Booster::findOne(['ID' => $booster_id]);
+        $b = Booster::findOne(['id' => $booster_id]);
         if($b)
         {
-            if($this->MONEY >= $b["COST"])
+            if($this->money >= $b["cost"])
             {
-                $this->MONEY -= $b["COST"];
-                $ub = UserBooster::findOne(['USER_ID' => $this->USER_ID,'BOOSTER_ID' => $booster_id]);
-                $ub['AMOUNT'] += 1;
+                $this->money -= $b["cost"];
+                $ub = UserBooster::findOne(['user_id' => $this->user_id,'booster_id' => $booster_id]);
+                $ub['amount'] += 1;
                 $ub -> save();
                 return $ub;
             }
@@ -118,6 +118,24 @@ class AppUser extends ActiveRecord
         }
         else
             throw new NotFoundHttpException("There is no such a booster");
+    }
 
+    public function rules()
+    {
+        return [
+            [ ['money'], 'default', 'value' => '0'],
+            [ ['lives'], 'default', 'value' => '0'],
+            [ ['next_update'], 'default', 'value' => function(){
+                $nextUpdate = new \DateTime();
+                $interval = new \DateInterval('PT15M');
+                $nextUpdate->add($interval)->format(self::DATE_FORMAT);
+                return $nextUpdate;
+            }],
+            [ ['server_timestamp'], 'default', 'value' => function(){
+                $currentDate = new \DateTime();
+                $currentDate->format(self::DATE_FORMAT);
+                return $currentDate;
+            }],
+        ];
     }
 }

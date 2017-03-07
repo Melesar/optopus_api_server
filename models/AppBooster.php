@@ -14,6 +14,6 @@ class AppBooster extends ActiveRecord
 {
     public static function tableName()
     {
-        return "APP_BOOSTER"; //возвращаем название таблицы для дальнейшей работы модели
+        return "app_booster"; //возвращаем название таблицы для дальнейшей работы модели
     }
 }

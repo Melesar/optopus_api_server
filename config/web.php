@@ -63,17 +63,17 @@ $config = [
                 'POST bundle'                       =>  'bundle/post',
                 'GET bundle/number'                 =>  'bundle/getnumber',
                 /******************/
-                'POST fb'                           =>  'social/postfb',
-                'POST live'                         =>  'social/postlive',
-                'POST booster'                      =>  'social/postbooster',
-                'POST product'                      =>  'social/postproduct',
+                'POST auth'                         =>  'social/postauth',
+                'POST lives'                        =>  'social/postlives',
+                'POST boosters'                     =>  'social/postboosters',
+                'POST products'                     =>  'social/postproducts',
                 'POST progress'                     =>  'social/postprogress',
-                'POST booster/buy'                  =>  'social/postboosterbuy',
+                'POST boosters/buy'                 =>  'social/postboostersbuy',
 
                 'GET user'                          =>  'social/getuser',
-                'GET live'                          =>  'social/getlive',
-                'GET booster'                       =>  'social/getbooster',
-                'GET product'                       =>  'social/getproduct',
+                'GET lives'                         =>  'social/getlives',
+                'GET boosters'                      =>  'social/getboosters',
+                'GET products'                      =>  'social/getproducts',
                 'GET progress'                      =>  'social/getprogress'
 
             ],

@@ -14,26 +14,18 @@ class Booster extends ActiveRecord
 {
     public static function tableName()
     {
-        return "BOOSTER"; //возвращаем название таблицы для дальнейшей работы модели
+        return "boosters"; //возвращаем название таблицы для дальнейшей работы модели
     }
-
 
     public function getApp()
     {
-        return $this->hasMany(Application::className(),["id" => "APP_ID"]) // "id" of Application to "app_id" of App_Booster
-        ->viaTable("App_Booster",["BOOSTER_ID"=>"ID"]) // "booster_id" of App_Booster to "id" of Booster
+        return $this->hasMany(Application::className(),["id" => "app_id"]) // "id" of Application to "app_id" of App_Booster
+        ->viaTable("App_Booster",["booster_id"=>"id"]) // "booster_id" of App_Booster to "id" of Booster
         ->all();
     }
 
-//    public function getUsers()
-//    {
-//        return $this->hasMany(Users::className(),["id" => "USER_ID"])
-//        ->viaTable("User_Booster",["BOOSTER_ID"=>"ID"])
-//        ->all();
-//    }
-
     public function getUserBooster()
     {
-        return $this->hasMany(UserBooster::className(),['BOOSTER_ID' => 'ID']);
+        return $this->hasMany(UserBooster::className(),['booster_id' => 'id']);
     }
 }

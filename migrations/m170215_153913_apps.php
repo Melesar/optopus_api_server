@@ -18,155 +18,155 @@ class m170215_153913_apps extends Migration
 
     public function up()
     {
-        $this->createTable('PRODUCT', [
-            'ID' => $this->bigInteger(),
-            'NAME' => $this->string(),
-            'DESCRIPTION' => $this->string(),
-            'IMAGE_URL' => $this->string(),
-            'PRICE' => $this->float(),
-            'CURRENCY' => $this->string(),
-            'PRODUCT_URL' => $this->string(),
-            'MONEY' => $this->integer(),
-            'PRIMARY KEY(ID)'
+        $this->createTable('product', [
+            'id' => $this->bigInteger(),
+            'name' => $this->string(),
+            'description' => $this->string(),
+            'image_url' => $this->string(),
+            'price' => $this->float(),
+            'currency'=> $this->string(),
+            'product_url' => $this->string(),
+            'money' => $this->integer(),
+            'PRIMARY KEY(id)'
         ]);
 //        $this->addPrimaryKey($this->productPk,'PRODUCT','ID');
 
-        $this->createTable('BOOSTER', [
-            'ID' => $this->bigInteger(),
-            'ALIAS' => $this->string(),
-            'NAME' => $this->string(),
-            'DESCRIPTION' => $this->string(),
-            'COST' => $this->float(),
-            'PRIMARY KEY(ID)'
+        $this->createTable('booster', [
+            'id' => $this->bigInteger(),
+            'alias' => $this->string(),
+            'name' => $this->string(),
+            'description' => $this->string(),
+            'cost' => $this->float(),
+            'PRIMARY KEY(id)'
         ]);
 //        $this->addPrimaryKey($this->boosterPk,'BOOSTER','ID');
 
-        $this->createTable('APPLICATION', [
-            'APP_ID' => $this->bigInteger(),
-            'APP_SECRET' => $this->string(),
-            'APP_NAME' => $this->string(),
-            'PRIMARY KEY(APP_ID)'
+        $this->createTable('application', [
+            'app_id' => $this->bigInteger(),
+            'app_secret' => $this->string(),
+            'app_name' => $this->string(),
+            'PRIMARY KEY(app_id)'
         ]);
 //        $this->addPrimaryKey($this->applicationPk,'APPLICATION','ID');
 
         /* USER_BOOSTER */
-        $this->createTable('USER_BOOSTER', [
-            'USER_ID' => $this->bigInteger(),
-            'BOOSTER_ID' => $this->bigInteger(),
-            'AMOUNT' => $this->integer(),
-            'PRIMARY KEY(USER_ID, BOOSTER_ID)'
+        $this->createTable('user_booster', [
+            'user_id' => $this->bigInteger(),
+            'booster_id' => $this->bigInteger(),
+            'amount' => $this->integer(),
+            'PRIMARY KEY(user_id, booster_id)'
         ]);
         $this->addForeignKey(
             $this->user_boosterBoosterFk,
-            'USER_BOOSTER',
-            'BOOSTER_ID',
-            'BOOSTER',
-            'ID'
+            'user_booster',
+            'booster_id',
+            'booster',
+            'id'
         );
 
         $this->addForeignKey(
             $this->user_boosterUserFk,
-            'USER_BOOSTER',
-            'USER_ID',
+            'user_booster',
+            'user_id',
             'users',
             'id'
         );
         /* APP_PRODUCT */
-        $this->createTable('APP_PRODUCT', [
-            'APP_ID' => $this->bigInteger(),
-            'PRODUCT_ID' => $this->bigInteger(),
-            'PRIMARY KEY(APP_ID, PRODUCT_ID)'
+        $this->createTable('app_product', [
+            'app_id' => $this->bigInteger(),
+            'product_id' => $this->bigInteger(),
+            'PRIMARY KEY(app_id, product_id)'
         ]);
 
         $this->addForeignKey(
             $this->app_productProductFk,
-            'APP_PRODUCT',
-            'PRODUCT_ID',
-            'PRODUCT',
-            'ID'
+            'app_product',
+            'product_id',
+            'product',
+            'id'
         );
 
         $this->addForeignKey(
             $this->app_productAppFk,
-            'APP_PRODUCT',
-            'APP_ID',
-            'APPLICATION',
-            'APP_ID'
+            'app_product',
+            'app_id',
+            'application',
+            'app_id'
         );
         /* APP_BOOSTER */
-        $this->createTable('APP_BOOSTER', [
-            'APP_ID' => $this->bigInteger(),
-            'BOOSTER_ID' => $this->bigInteger(),
-            'PRIMARY KEY(APP_ID, BOOSTER_ID)'
+        $this->createTable('app_booster', [
+            'app_id' => $this->bigInteger(),
+            'booster_id' => $this->bigInteger(),
+            'PRIMARY KEY(app_id, booster_id)'
         ]);
 
         $this->addForeignKey(
             $this->app_boosterBoosterFk,
-            'APP_BOOSTER',
-            'BOOSTER_ID',
-            'BOOSTER',
-            'ID'
+            'app_booster',
+            'booster_id',
+            'booster',
+            'id'
         );
 
         $this->addForeignKey(
             $this->app_boosterAppFk,
-            'APP_BOOSTER',
-            'APP_ID',
-            'APPLICATION',
-            'APP_ID'
+            'app_booster',
+            'app_id',
+            'application',
+            'app_id'
         );
         /* APP_USER */
-        $this->createTable('APP_USER', [
-            'APP_ID' => $this->bigInteger(),
-            'USER_ID' => $this->bigInteger(),
-            'SAC' => $this->string(),
-            'MONEY' => $this->float(),
-            'LIVES' => $this->integer(),
-            'NEXT_UPDATE' => $this->dateTime(),
-            'SERVER_TIMESTAMP' => $this->dateTime(),
-            'SAVED_GAME' => $this->string(),
-            'PRIMARY KEY(APP_ID, USER_ID)'
+        $this->createTable('app_user', [
+            'app_id' => $this->bigInteger(),
+            'user_id' => $this->bigInteger(),
+            'sac' => $this->string(),
+            'money' => $this->float(),
+            'lives' => $this->integer(),
+            'next_update' => $this->dateTime(),
+            'server_timestamp' => $this->dateTime(),
+            'saved_game' => $this->string(),
+            'PRIMARY KEY(app_id, user_id)'
         ]);
 
         $this->addForeignKey(
             $this->app_userUserFk,
-            'APP_USER',
-            'USER_ID',
+            'app_user',
+            'user_id',
             'users',
             'id'
         );
 
         $this->addForeignKey(
             $this->app_userAppFk,
-            'APP_USER',
-            'APP_ID',
-            'APPLICATION',
-            'APP_ID'
+            'app_user',
+            'app_id',
+            'application',
+            'app_id'
         );
 
     }
 
     public function down()
     {
-        $this->dropForeignKey($this->app_userAppFk, 'APP_USER');
-        $this->dropForeignKey($this->app_userUserFk, 'APP_USER');
-        $this->dropTable('APP_USER');
+        $this->dropForeignKey($this->app_userAppFk, 'app_user');
+        $this->dropForeignKey($this->app_userUserFk, 'app_user');
+        $this->dropTable('app_user');
 
-        $this->dropForeignKey($this->app_boosterAppFk, 'APP_BOOSTER');
-        $this->dropForeignKey($this->app_boosterBoosterFk, 'APP_BOOSTER');
-        $this->dropTable('APP_BOOSTER');
+        $this->dropForeignKey($this->app_boosterAppFk, 'app_booster');
+        $this->dropForeignKey($this->app_boosterBoosterFk, 'app_booster');
+        $this->dropTable('app_booster');
 
-        $this->dropForeignKey($this->app_productAppFk, 'APP_PRODUCT');
-        $this->dropForeignKey($this->app_productProductFk, 'APP_PRODUCT');
-        $this->dropTable('APP_PRODUCT');
+        $this->dropForeignKey($this->app_productAppFk, 'app_product');
+        $this->dropForeignKey($this->app_productProductFk, 'app_product');
+        $this->dropTable('app_product');
 
-        $this->dropForeignKey($this->user_boosterBoosterFk, 'USER_BOOSTER');
-        $this->dropForeignKey($this->user_boosterUserFk, 'USER_BOOSTER');
-        $this->dropTable('USER_BOOSTER');
+        $this->dropForeignKey($this->user_boosterBoosterFk, 'user_booster');
+        $this->dropForeignKey($this->user_boosterUserFk, 'user_booster');
+        $this->dropTable('user_booster');
 
-        $this->dropTable('APPLICATION');
-        $this->dropTable('BOOSTER');
-        $this->dropTable('PRODUCT');
+        $this->dropTable('application');
+        $this->dropTable('booster');
+        $this->dropTable('product');
         return true;
     }
 

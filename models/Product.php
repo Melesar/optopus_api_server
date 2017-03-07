@@ -14,13 +14,13 @@ class Product extends ActiveRecord
 {
     public static function tableName()
     {
-        return "PRODUCT"; //возвращаем название таблицы для дальнейшей работы модели
+        return "product"; //возвращаем название таблицы для дальнейшей работы модели
     }
 
     public function getApp()
     {
-        return $this->hasMany(Application::className(),["ID => APP_ID"]) // "id" of Application to "app_id" of App_Product
-        ->viaTable("App_Product",["PRODUCT_ID"=>"ID"]) // "product_id" of App_Product to "id" of Product
+        return $this->hasMany(Application::className(),["id => app_id"]) // "id" of Application to "app_id" of App_Product
+        ->viaTable("App_Product",["product_id"=>"id"]) // "product_id" of App_Product to "id" of Product
         ->all();
     }
 }

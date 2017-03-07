@@ -15,15 +15,15 @@ class UserBooster extends ActiveRecord
 {
     public static function tableName()
     {
-        return "USER_BOOSTER"; //возвращаем название таблицы для дальнейшей работы модели
+        return "user_booster"; //возвращаем название таблицы для дальнейшей работы модели
     }
 
     public function useBooster()
     {
-        $b = Booster::findOne($this->BOOSTER_ID);
-        if($b && $this->AMOUNT > 0)
+        $b = Booster::findOne($this->booster_id);
+        if($b && $this->amount > 0)
         {
-            $this->AMOUNT--;
+            $this->amount--;
             $this->save();
         }
         else
@@ -32,11 +32,11 @@ class UserBooster extends ActiveRecord
 
     public function getUsers()
     {
-        return $this->hasOne(Users::className(),["id"=>"USER_ID"]);
+        return $this->hasOne(Users::className(),["id"=>"user_id"]);
     }
 
     public function getBooster()
     {
-        return $this->hasOne(Booster::className(),["ID"=>"BOOSTER_ID"]);
+        return $this->hasOne(Booster::className(),["id"=>"booster_id"]);
     }
 }

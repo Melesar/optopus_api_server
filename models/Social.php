@@ -22,18 +22,18 @@ class Social extends ActiveRecord
             ->select('*')
             ->from('user_booster');
 
-        $q2 = $q1->innerJoin('users','user_booster.USER_ID = users.id')
-            ->innerJoin('booster','booster.ID = user_booster.BOOSTER_ID')
-            ->innerJoin('app_user','user_booster.USER_ID = app_user.USER_ID');
+        $q2 = $q1->innerJoin('users','user_booster.user_id = users.id')
+            ->innerJoin('booster','booster.ID = user_booster.booster_id')
+            ->innerJoin('app_user','user_booster.user_id = app_user.user_id');
 
         $q3 = $q2
-            ->select('users.id AS USER_ID, users.name AS FIRST_NAME,
-            users.last_name AS LAST_NAME, app_user.MONEY,
-            users.avatar_url AS PICTURE, users.first_authorized AS SIGNED_UP,
-            users.last_online AS LAST_ONLINE, booster.ID AS BOOSTER_ID,
-            booster.ALIAS, booster.NAME AS BOOSTER_NAME,
-            booster.DESCRIPTION, booster.COST')
-            ->where(['users.id' => $app_user['USER_ID']])
+            ->select('users.id AS user_id, users.name AS first_name,
+            users.last_name AS last_name, app_user.money,
+            users.avatar_url AS picture, users.first_authorized AS signed_up,
+            users.last_online AS last_online, booster.id AS booster_id,
+            booster.alias, booster.name AS booster_name,
+            booster.description, booster.cost')
+            ->where(['users.id' => $app_user['user_id']])
             ->all();
 
         return $q3;

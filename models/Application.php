@@ -19,10 +19,10 @@ class Application extends ActiveRecord
     public function getUser($accessToken)
     {
         $fb = new Facebook\Facebook([
-            'app_id'                 =>     $this->APP_ID,         //1360389767383525
-            'app_secret'             =>     $this->APP_SECRET,     //0816c6f7a545d8d930710cbe4d5c12e8
+            'app_id'                 =>     $this->app_id,         //1360389767383525
+            'app_secret'             =>     $this->app_secret,     //0816c6f7a545d8d930710cbe4d5c12e8
             'default_graph_version'  =>     'v2.8',                // name: Match Me Octopus Adventure
-            'default_access_token'   =>     $this->APP_SECRET,
+            'default_access_token'   =>     $this->app_secret,
         ]);
 
         $res = $fb->get('me?fields=id,first_name,last_name,gender,age_range,picture{url}',$accessToken);
@@ -38,12 +38,12 @@ class Application extends ActiveRecord
 
     public static function findApp($accessToken)
     {
-        $app_id = @file_get_contents('https://graph.facebook.com/app/?access_token='.$accessToken, NULL, NULL, 134, 16);
-        if ($app_id === FALSE)
+        $req = @file_get_contents('https://graph.facebook.com/app/?access_token='.$accessToken);
+        $app = json_decode($req, true);
+        if ($app == null)
         {
             throw new NotFoundHttpException("There is a problem with your access token");
         }
-
-        return Application::findOne(['APP_ID' => $app_id]);
+        return $app['id'];
     }
 }
