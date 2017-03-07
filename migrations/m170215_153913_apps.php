@@ -4,9 +4,6 @@ use yii\db\Migration;
 
 class m170215_153913_apps extends Migration
 {
-//    public $productPk = 'product_pk';
-//    public $boosterPk = 'booster_pk';
-//    public $applicationPk = 'application_pk';
     public $user_boosterUserFk = 'user_booster_user_fk';
     public $user_boosterBoosterFk = 'user_booster_booster_fk';
     public $app_userUserFk = 'app_user_user_fk';
@@ -29,7 +26,6 @@ class m170215_153913_apps extends Migration
             'money' => $this->integer(),
             'PRIMARY KEY(id)'
         ]);
-//        $this->addPrimaryKey($this->productPk,'PRODUCT','ID');
 
         $this->createTable('booster', [
             'id' => $this->bigInteger(),
@@ -39,7 +35,6 @@ class m170215_153913_apps extends Migration
             'cost' => $this->float(),
             'PRIMARY KEY(id)'
         ]);
-//        $this->addPrimaryKey($this->boosterPk,'BOOSTER','ID');
 
         $this->createTable('application', [
             'app_id' => $this->bigInteger(),
@@ -47,7 +42,6 @@ class m170215_153913_apps extends Migration
             'app_name' => $this->string(),
             'PRIMARY KEY(app_id)'
         ]);
-//        $this->addPrimaryKey($this->applicationPk,'APPLICATION','ID');
 
         /* USER_BOOSTER */
         $this->createTable('user_booster', [
@@ -119,9 +113,9 @@ class m170215_153913_apps extends Migration
         $this->createTable('app_user', [
             'app_id' => $this->bigInteger(),
             'user_id' => $this->bigInteger(),
-            'sac' => $this->string(),
-            'money' => $this->float(),
-            'lives' => $this->integer(),
+            'SAC' => $this->string(),
+            'money' => $this->float()->defaultValue(0),
+            'lives' => $this->integer()->defaultValue(5),
             'next_update' => $this->dateTime(),
             'server_timestamp' => $this->dateTime(),
             'saved_game' => $this->string(),
@@ -143,7 +137,6 @@ class m170215_153913_apps extends Migration
             'application',
             'app_id'
         );
-
     }
 
     public function down()

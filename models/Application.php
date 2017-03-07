@@ -33,7 +33,6 @@ class Application extends ActiveRecord
         }
         else
             throw new NotFoundHttpException("There is no such a user in Facebook");
-
     }
 
     public static function findApp($accessToken)
@@ -44,6 +43,6 @@ class Application extends ActiveRecord
         {
             throw new NotFoundHttpException("There is a problem with your access token");
         }
-        return $app['id'];
+        return Application::findOne(['app_id'=>$app['id']]);
     }
 }

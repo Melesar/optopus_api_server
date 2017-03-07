@@ -25,7 +25,6 @@ use yii\web\UnauthorizedHttpException;
 use yii\web\UploadedFile;
 
 use Facebook;
-use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
 
 
@@ -33,7 +32,7 @@ class SocialController extends Controller
 {
     public function actionPostauth()
     {
-        $accessToken = Yii::$app->request->getBodyParam("fac");
+        $accessToken = Yii::$app->request->getBodyParam("FAC");
 
         $app_obj = Application::findApp($accessToken);
 
@@ -59,16 +58,16 @@ class SocialController extends Controller
 
     public function actionGetuser()
     {
-        $sac = Yii::$app->request->getHeaders()->get('sac');
-        $app_user = AppUser::findOne(['sac' => $sac]);
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
 
         return Social::getUserMultitableData($app_user);
     }
 
     public function actionGetboosters()
     {
-        $sac = Yii::$app->request->getHeaders()->get('sac');
-        $app_user = AppUser::findOne(['sac' => $sac]);
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
         if($app_user)
         {
             return Booster::find()->all();
@@ -79,8 +78,8 @@ class SocialController extends Controller
 
     public function actionGetlives()
     {
-        $sac = Yii::$app->request->getHeaders()->get('sac');
-        $app_user = AppUser::findOne(['sac' => $sac]);
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
         if($app_user)
         {
             $app_user->refreshDate();
@@ -93,8 +92,8 @@ class SocialController extends Controller
 
     public function actionGetproducts()
     {
-        $sac = Yii::$app->request->getHeaders()->get('sac');
-        $app_user = AppUser::findOne(['sac' => $sac]);
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
         if($app_user)
         {
             return Product::find()->all();
@@ -103,10 +102,22 @@ class SocialController extends Controller
             throw new UnauthorizedHttpException("Please, make sure, that you have a correct one access token");
     }
 
+    public function actionGetprogress()
+    {
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
+        if($app_user)
+        {
+            $app_user->downloadSavedGame();
+        }
+        else
+            throw new UnauthorizedHttpException("Please, make sure, that you have a correct one access token");
+    }
+
     public function actionPostprogress()
     {
-        $sac = Yii::$app->request->getHeaders()->get('sac');
-        $app_user = AppUser::findOne(['sac' => $sac]);
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
         if($app_user)
         {
             $app_user->uploadSavedGame($_FILES['binary']);
@@ -117,8 +128,8 @@ class SocialController extends Controller
 
     public function actionPostboosters()
     {
-        $sac = Yii::$app->request->getHeaders()->get('sac');
-        $app_user = AppUser::findOne(['sac' => $sac]);
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
         if($app_user)
         {
             $booster_id = Yii::$app->request->getBodyParam('booster_id');
@@ -131,8 +142,8 @@ class SocialController extends Controller
 
     public function actionPostboostersbuy()
     {
-        $sac = Yii::$app->request->getHeaders()->get('sac');
-        $app_user = AppUser::findOne(['sac' => $sac]);
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
         if($app_user)
         {
             $booster_id = Yii::$app->request->getBodyParam('booster_id');
@@ -144,8 +155,8 @@ class SocialController extends Controller
 
     public function actionPostlives()
     {
-        $sac = Yii::$app->request->getHeaders()->get('sac');
-        $app_user = AppUser::findOne(['sac' => $sac]);
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
         if($app_user)
         {
             $app_user->liveIncrement();
@@ -158,8 +169,8 @@ class SocialController extends Controller
 
     public function actionPostproducts()
     {
-        $sac = Yii::$app->request->getHeaders()->get('sac');
-        $app_user = AppUser::findOne(['sac' => $sac]);
+        $SAC = Yii::$app->request->getHeaders()->get('SAC');
+        $app_user = AppUser::findOne(['SAC' => $SAC]);
         if($app_user)
         {
             $app = Application::findOne($app_user['app_id']);

@@ -18,7 +18,7 @@ class m161027_192954_users extends Migration
             'id' => Schema::TYPE_BIGINT. " PRIMARY KEY",
             'name' => Schema::TYPE_STRING . " NOT NULL",
             'last_name' => Schema::TYPE_STRING. " NOT NULL",
-            'avatar_url' => Schema::TYPE_STRING,
+            'avatar_url' => Schema::TYPE_STRING. " DEFAULT 'http://shop-ok.com.ua/components/com_jshopping/files/img_products/full_interernaya-nakleika-dlya-mela-mister-inkognito-6858i4.jpg'",
             'first_authorized' => Schema::TYPE_DATE,
             'last_online' => Schema::TYPE_DATE,
         ]);

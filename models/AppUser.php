@@ -31,7 +31,7 @@ class AppUser extends ActiveRecord
             $newSAC = '';
             for ($i = 0; $i < 18; $i++)
                 $newSAC .= substr($chars, rand(1, $numChars) - 1, 1);
-        }while($this::findOne(['sac' => $newSAC]) != null);
+        }while($this::findOne(['SAC' => $newSAC]) != null);
 
         $this->SAC = $newSAC;
         $this->save();
@@ -82,7 +82,6 @@ class AppUser extends ActiveRecord
 
     public function uploadSavedGame($uploadedData)
     {
-
         $binData = fopen($_FILES['binary']['tmp_name'],'r');
         if($binData == null)
             throw new BadRequestHttpException();
@@ -98,6 +97,13 @@ class AppUser extends ActiveRecord
         }
         $this->saved_game = $path;
         $this->save();
+    }
+
+    public function downloadSavedGame()
+    {
+        $path = $this->saved_game;
+        $byte = readfile($path);
+        return $byte;
     }
 
     public function buyBooster($booster_id)
@@ -118,24 +124,5 @@ class AppUser extends ActiveRecord
         }
         else
             throw new NotFoundHttpException("There is no such a booster");
-    }
-
-    public function rules()
-    {
-        return [
-            [ ['money'], 'default', 'value' => '0'],
-            [ ['lives'], 'default', 'value' => '0'],
-            [ ['next_update'], 'default', 'value' => function(){
-                $nextUpdate = new \DateTime();
-                $interval = new \DateInterval('PT15M');
-                $nextUpdate->add($interval)->format(self::DATE_FORMAT);
-                return $nextUpdate;
-            }],
-            [ ['server_timestamp'], 'default', 'value' => function(){
-                $currentDate = new \DateTime();
-                $currentDate->format(self::DATE_FORMAT);
-                return $currentDate;
-            }],
-        ];
     }
 }

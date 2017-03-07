@@ -23,7 +23,7 @@ class Social extends ActiveRecord
             ->from('user_booster');
 
         $q2 = $q1->innerJoin('users','user_booster.user_id = users.id')
-            ->innerJoin('booster','booster.ID = user_booster.booster_id')
+            ->innerJoin('booster','booster.id = user_booster.booster_id')
             ->innerJoin('app_user','user_booster.user_id = app_user.user_id');
 
         $q3 = $q2
